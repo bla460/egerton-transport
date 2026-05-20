@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Egerton Fleet Live Tracking</title>
+    <meta name="description" content="View real-time Egerton University transit route progress, simulated telemetry, and vehicle status dispatches.">
+    <script src="JS/theme.js"></script>
+    <link rel="stylesheet" href="nojacss.css">
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="home.css">
+    <style>
+        .tracking-header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--brand-green), #14532d);
+            color: white;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-md);
+        }
+        .tracking-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: white;
+        }
+        .tracking-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .role-badge-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+        }
+        .role-badge.visitor {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .role-badge.staff {
+            background: #fef08a;
+            color: #854d0e;
+            border: 1px solid #fde047;
+        }
+        .role-badge.student {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .tracking-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+        }
+
+        /* Filter Controls */
+        .tracking-filters {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        .filter-chip {
+            background: white;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .filter-chip:hover, .filter-chip.active {
+            background: var(--brand-green);
+            color: white;
+            border-color: var(--brand-green);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Fleet Cards */
+        .fleet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+        .tracking-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .tracking-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--brand-green);
+        }
+
+        /* Status Colors */
+        .tracking-card.on-route { border-left: 5px solid var(--success-color); }
+        .tracking-card.stopped { border-left: 5px solid var(--error-color); }
+        .tracking-card.maintenance { border-left: 5px solid var(--warning-color); }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .vehicle-title h3 {
+            font-size: 16px;
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+        .vehicle-title span {
+            font-size: 11px;
+            color: var(--text-light);
+            font-family: monospace;
+        }
+        .status-pill {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .status-pill.on-route { background: #dcfce7; color: #15803d; }
+        .status-pill.stopped { background: #fee2e2; color: #b91c1c; }
+        .status-pill.maintenance { background: #fef9c3; color: #a16207; }
+
+        .route-info {
+            background: #f8fafc;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 12px;
+            color: var(--text-dark);
+        }
+
+        /* Animated Progress Tracker */
+        .route-tracker {
+            position: relative;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            margin: 15px 0;
+        }
+        .tracker-progress {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--brand-green), #22c55e);
+            width: 0%;
+            transition: width 2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tracker-node {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid var(--brand-green);
+        }
+        .tracker-node.start { left: 0%; }
+        .tracker-node.end { left: 100%; }
+        .tracker-bus-icon {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            left: 0%;
+            font-size: 14px;
+            z-index: 10;
+            transition: left 2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Telemetry Readouts */
+        .telemetry-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            text-align: center;
+            border-top: 1px solid #f1f5f9;
+            border-bottom: 1px solid #f1f5f9;
+            padding: 10px 0;
+            font-size: 11px;
+        }
+        .telemetry-item span {
+            display: block;
+            color: var(--text-light);
+            font-size: 9px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .telemetry-item strong {
+            color: var(--text-dark);
+            font-size: 11px;
+            font-family: monospace;
+        }
+
+        .timestamp-log {
+            font-size: 10px;
+            color: var(--text-light);
+            text-align: right;
+        }
+
+        /* Dispatch Action Buttons */
+        .dispatch-actions {
+            display: none; /* Shown dynamically for staff */
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .dispatch-btn {
+            background: white;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .dispatch-btn:hover {
+            border-color: var(--brand-green);
+            color: var(--brand-green);
+            background: var(--brand-green-light);
+        }
+        .dispatch-btn.danger:hover {
+            border-color: var(--error-color);
+            color: var(--error-color);
+            background: #fff5f5;
+        }
+
+        .telemetry-refresh-section {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .refresh-btn {
+            background: var(--brand-green);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+        .refresh-btn:hover {
+            background: var(--brand-green-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+    </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="logo">
+      <img src="logo/logo.webp" alt="Logo">
+      <h2>Transport department</h2>
+    </div>
+    <nav class="nav-links">
+      <a href="home.html">Home</a>
+      <a href="vehicles.html">Vehicles</a>
+      <a href="service.html">Services</a>
+      <a href="staff.html">Staff</a>
+      <a href="Tracking.html" class="active">Tracking</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <button class="login-btn" id="login-nav-btn">Login</button>
+  </header>
+
+  <!-- Unified Login Modal -->
+  <div id="login" class="popup">
+    <div class="popup-box">
+      <button class="close" id="close-login" style="background:none; border:none; cursor:pointer;">&times;</button>
+      <h2 style="color:var(--brand-green); margin-bottom:15px;">Login</h2>
+      
+      <form id="login-form-inner" style="display:flex; flex-direction:column; gap:10px;">
+        <div class="input-group">
+          <label for="login-username">Username or Email</label>
+          <input type="text" id="login-username" placeholder="j.doe@egerton.ac.ke" required>
+          <span class="input-feedback-msg"></span>
+        </div>
+        
+        <div class="input-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" required>
+          <span class="input-feedback-msg"></span>
+        </div>
+        
+        <button type="submit" style="margin-top:10px;">Login</button>
+      </form>
+
+      <p style="margin-top: 10px; font-size: 12px;"><button id="to-forgot" style="background:none; border:none; color:var(--brand-green); cursor:pointer; text-decoration:underline; font-family:inherit;">Forgot Password?</button></p>
+
+      <p style="font-size:12px; margin-top: 10px;">Don't have an account?
+        <button id="to-signup" style="background:none; border:none; color:var(--brand-green); cursor:pointer; text-decoration:underline; font-family:inherit; font-weight:600;">Create one</button>
+      </p>
+    </div>
+  </div>
+
+  <!-- Unified Signup Modal -->
+  <div id="signup" class="popup">
+    <div class="popup-box" style="width: 340px;">
+      <button class="close" id="close-signup" style="background:none; border:none; cursor:pointer;">&times;</button>
+      <h2 style="color:var(--brand-green); margin-bottom:15px;">Create Account</h2>
+
+      <form id="signup-form-inner" style="display:flex; flex-direction:column; gap:10px;">
+        <div class="input-group">
+          <label for="signup-username">Username</label>
+          <input type="text" id="signup-username" placeholder="alex_egerton" required>
+          <span class="input-feedback-msg"></span>
+        </div>
+
+        <div class="input-group">
+          <label for="signup-email">University Email</label>
+          <input type="email" id="signup-email" placeholder="example@egerton.ac.ke" required>
+          <span class="input-feedback-msg"></span>
+        </div>
+
+        <div class="input-group">
+          <label for="signup-usertype">Account Type</label>
+          <select id="signup-usertype" required>
+              <option value="student">Student</option>
+              <option value="staff">Staff / Faculty</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label for="signup-idnum">Reg No / Staff ID</label>
+          <input type="text" id="signup-idnum" placeholder="S23/04812/21" required>
+          <span class="input-feedback-msg"></span>
+        </div>
+
+        <div class="input-group">
+          <label for="signup-password">Password</label>
+          <input type="password" id="signup-password" placeholder="••••••••" required>
+          <span class="input-feedback-msg"></span>
+        </div>
+
+        <button type="submit" style="margin-top:10px;">Create Account</button>
+      </form>
+
+      <p style="font-size:12px; margin-top: 10px;">Already have an account?
+        <button id="to-login" style="background:none; border:none; color:var(--brand-green); cursor:pointer; text-decoration:underline; font-family:inherit; font-weight:600;">Login here</button>
+      </p>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div id="forgot" class="popup">
+    <div class="popup-box">
+      <button class="close" id="close-forgot" style="background:none; border:none; cursor:pointer;">&times;</button>
+      <h2 style="color:var(--brand-green); margin-bottom:15px;">Forgot Password</h2>
+
+      <p style="font-size:12px; margin-bottom:15px; color:var(--text-light);">Enter your university email to reset your password.</p>
+      <form id="forgot-form-inner" style="display:flex; flex-direction:column; gap:10px;">
+        <div class="input-group">
+          <label for="forgot-email">University Email</label>
+          <input type="email" id="forgot-email" placeholder="example@egerton.ac.ke" required>
+          <span class="input-feedback-msg"></span>
+        </div>
+        <button type="submit" style="margin-top:10px;">Reset Password</button>
+      </form>
+
+      <p style="margin-top: 10px; font-size:12px;"><button id="forgot-to-login" style="background:none; border:none; color:var(--brand-green); cursor:pointer; text-decoration:underline; font-family:inherit;">Back to Login</button></p>
+    </div>
+  </div>
+
+  <!-- Hero Header -->
+  <div class="tracking-header">
+      <h1>LIVE GPS FLEET TELEMETRY</h1>
+      <p>Real-time vehicle tracking, dispatch diagnostics, and route geofences for Egerton University transit.</p>
+      <div class="role-badge-container">
+          <span class="role-badge visitor" id="role-indicator">👤 Visitor Feed (Read-Only)</span>
+      </div>
+  </div>
+
+  <div class="tracking-container">
+      
+      <!-- Filters -->
+      <div class="tracking-filters">
+          <button class="filter-chip active" onclick="filterFleet('all', this)">All Vehicles</button>
+          <button class="filter-chip" onclick="filterFleet('on-route', this)">On Route</button>
+          <button class="filter-chip" onclick="filterFleet('stopped', this)">Stopped</button>
+          <button class="filter-chip" onclick="filterFleet('maintenance', this)">Maintenance</button>
+      </div>
+
+      <!-- Fleet Tracking Cards -->
+      <div class="fleet-grid" id="tracking-fleet-grid">
+          <!-- Card 1: Passengers Bus -->
+          <div class="tracking-card on-route" data-status="on-route" id="passengers-bus-1">
+              <div class="card-header">
+                  <div class="vehicle-title">
+                      <h3>Passengers Bus</h3>
+                      <span>ID: EGT-BUS-10A | KBQ 402P</span>
+                  </div>
+                  <span class="status-pill on-route">On Route</span>
+              </div>
+              <div class="route-info">
+                  <strong>Route:</strong> Njoro Campus ➔ Town Campus Excursion
+              </div>
+              
+              <!-- Progress Tracker -->
+              <div class="route-tracker">
+                  <div class="tracker-node start"></div>
+                  <div class="tracker-progress" id="progress-bar-passengers-bus-1"></div>
+                  <div class="tracker-bus-icon" id="bus-icon-passengers-bus-1">🚌</div>
+                  <div class="tracker-node end"></div>
+              </div>
+
+              <!-- Telemetry -->
+              <div class="telemetry-grid">
+                  <div class="telemetry-item">
+                      <span>Speed</span>
+                      <strong id="speed-passengers-bus-1">62 km/h</strong>
+                  </div>
+                  <div class="telemetry-item">
+                      <span>Fuel</span>
+                      <strong id="fuel-passengers-bus-1">78%</strong>
+                  </div>
+                  <div class="telemetry-item">
+                      <span>GPS Coordinates</span>
+                      <strong id="gps-passengers-bus-1">0.3721° S, 35.9324° E</strong>
+                  </div>
+              </div>
+              
+              <div class="timestamp-log">
+                  Last Updated: <span class="time-log" id="time-passengers-bus-1">10:15:32 AM</span>
+              </div>
+
+              <!-- Staff Commands -->
+              <div class="dispatch-actions" id="actions-passengers-bus-1">
+                  <button class="dispatch-btn danger" onclick="dispatchVehicle('passengers-bus-1', 'stopped')">🛑 Stop Route</button>
+                  <button class="dispatch-btn" onclick="dispatchVehicle('passengers-bus-1', 'maintenance')">🔧 Send to Shop</button>
+              </div>
+          </div>
+
+          <!-- Card 2: Campus Shuttle -->
+          <div class="tracking-card on-route" data-status="on-route" id="campus-shuttle-1">
+              <div class="card-header">
+                  <div class="vehicle-title">
+                      <h3>Campus Shuttle</h3>
+                      <span>ID: EGT-SHT-24B | KCD 794M</span>
+                  </div>
+                  <span class="status-pill on-route">On Route</span>
+              </div>
+              <div class="route-info">
+                  <strong>Route:</strong> Hostels Circular ➔ Lectures Lane
+              </div>
+              
+              <!-- Progress Tracker -->
+              <div class="route-tracker">
+                  <div class="tracker-node start"></div>
+                  <div class="tracker-progress" id="progress-bar-campus-shuttle-1"></div>
+                  <div class="tracker-bus-icon" id="bus-icon-campus-shuttle-1">🚐</div>
+                  <div class="tracker-node end"></div>
+              </div>
+
+              <!-- Telemetry -->
+              <div class="telemetry-grid">
+                  <div class="telemetry-item">
+                      <span>Speed</span>
+                      <strong id="speed-campus-shuttle-1">28 km/h</strong>
+                  </div>
+                  <div class="telemetry-item">
+                      <span>Fuel</span>
+                      <strong id="fuel-campus-shuttle-1">45%</strong>
+                  </div>
+                  <div class="telemetry-item">
+                      <span>GPS Coordinates</span>
+                      <strong id="gps-campus-shuttle-1">0.3644° S, 35.9281° E</strong>
+                  </div>
+              </div>
+              
+              <div class="timestamp-log">
+                  Last Updated: <span class="time-log" id="time-campus-shuttle-1">10:14:02 AM</span>
+              </div>
+
+              <!-- Staff Commands -->
+              <div class="dispatch-actions" id="actions-campus-shuttle-1">
+                  <button class="dispatch-btn danger" onclick="dispatchVehicle('campus-shuttle-1', 'stopped')">🛑 Stop Route</button>
+                  <button class="dispatch-btn" onclick="dispatchVehicle('campus-shuttle-1', 'maintenance')">🔧 Send to Shop</button>
+              </div>
+          </div>
+
+          <!-- Card 3: Staff Van -->
+          <div class="tracking-card maintenance" data-status="maintenance" id="staff-van-1">
+              <div class="card-header">
+                  <div class="vehicle-title">
+                      <h3>Staff Van</h3>
+                      <span>ID: EGT-VAN-02F | KDF 884L</span>
+                  </div>
+                  <span class="status-pill maintenance">Maintenance</span>
+              </div>
+              <div class="route-info">
+                  <strong>Route:</strong> Out of Service (Garage Diagnostic)
+              </div>
+              
+              <!-- Progress Tracker -->
+              <div class="route-tracker">
+                  <div class="tracker-node start"></div>
+                  <div class="tracker-progress" style="width: 0%;" id="progress-bar-staff-van-1"></div>
+                  <div class="tracker-bus-icon" style="left: 0%;" id="bus-icon-staff-van-1">🚐</div>
+                  <div class="tracker-node end"></div>
+              </div>
+
+              <!-- Telemetry -->
+              <div class="telemetry-grid">
+                  <div class="telemetry-item">
+                      <span>Speed</span>
+                      <strong id="speed-staff-van-1">0 km/h</strong>
+                  </div>
+                  <div class="telemetry-item">
+                      <span>Fuel</span>
+                      <strong id="fuel-staff-van-1">95%</strong>
+                  </div>
+                  <div class="telemetry-item">
+                      <span>GPS Coordinates</span>
+                      <strong id="gps-staff-van-1">0.3702° S, 35.9304° E</strong>
+                  </div>
+              </div>
+              
+              <div class="timestamp-log">
+                  Last Updated: <span class="time-log" id="time-staff-van-1">08:30:15 AM</span>
+              </div>
+
+              <!-- Staff Commands -->
+              <div class="dispatch-actions" id="actions-staff-van-1">
+                  <button class="dispatch-btn" style="grid-column: 1/-1;" onclick="dispatchVehicle('staff-van-1', 'on-route')">🟢 Dispatch to Active Route</button>
+              </div>
+          </div>
+
+          <!-- Card 4: Delivery Truck -->
+          <div class="tracking-card stopped" data-status="stopped" id="delivery-truck-1">
+              <div class="card-header">
+                  <div class="vehicle-title">
+                      <h3>Delivery Truck</h3>
+                      <span>ID: EGT-TRK-08D | KFH 991K</span>
+                  </div>
+                  <span class="status-pill stopped">Stopped</span>
+              </div>
+              <div class="route-info">
+                  <strong>Route:</strong> Town Campus Depot (Loading Cargo)
+              </div>
+              
+              <!-- Progress Tracker -->
+              <div class="route-tracker">
+                  <div class="tracker-node start"></div>
+                  <div class="tracker-progress" style="width: 0%;" id="progress-bar-delivery-truck-1"></div>
+                  <div class="tracker-bus-icon" style="left: 0%;" id="bus-icon-delivery-truck-1">🚚</div>
+                  <div class="tracker-node end"></div>
+              </div>
+
+              <!-- Telemetry -->
+              <div class="telemetry-grid">
+                  <div class="telemetry-item">
+                      <span>Speed</span>
+                      <strong id="speed-delivery-truck-1">0 km/h</strong>
+                  </div>
+                  <div class="telemetry-item">
+                      <span>Fuel</span>
+                      <strong id="fuel-delivery-truck-1">62%</strong>
+                  </div>
+                  <div class="telemetry-item">
+                      <span>GPS Coordinates</span>
+                      <strong id="gps-delivery-truck-1">0.3842° S, 35.9412° E</strong>
+                  </div>
+              </div>
+              
+              <div class="timestamp-log">
+                  Last Updated: <span class="time-log" id="time-delivery-truck-1">10:02:11 AM</span>
+              </div>
+
+              <!-- Staff Commands -->
+              <div class="dispatch-actions" id="actions-delivery-truck-1">
+                  <button class="dispatch-btn" onclick="dispatchVehicle('delivery-truck-1', 'on-route')">🟢 Dispatch Route</button>
+                  <button class="dispatch-btn" onclick="dispatchVehicle('delivery-truck-1', 'maintenance')">🔧 Send to Shop</button>
+              </div>
+          </div>
+      </div>
+
+      <!-- Live GPS Telemetry Refresh Trigger -->
+      <div class="telemetry-refresh-section">
+          <button class="refresh-btn" id="telemetry-refresh-btn" onclick="triggerTelemetryRefreshes()">⚡ Synchronize GPS Telemetry</button>
+      </div>
+
+  </div>
+
+  <footer class="footer">
+      <p>&copy; 2026 Egerton University Transport Department. All rights reserved.</p>
+  </footer>
+
+  <script src="JS/auth-booking.js"></script>
+  <script>
+      // 1. Telemetry Variables
+      const progressRates = {
+          "passengers-bus-1": 68,
+          "campus-shuttle-1": 32,
+          "staff-van-1": 0,
+          "delivery-truck-1": 0
+      };
+
+      // 2. Animate Route Tracker Bars on Page Load
+      document.addEventListener("DOMContentLoaded", () => {
+          animateTracks();
+          syncUserRoles();
+      });
+
+      function animateTracks() {
+          Object.keys(progressRates).forEach(id => {
+              const card = document.getElementById(id);
+              if (card && card.getAttribute("data-status") === "on-route") {
+                  const bar = document.getElementById(`progress-bar-${id}`);
+                  const bus = document.getElementById(`bus-icon-${id}`);
+                  const rate = progressRates[id];
+                  if (bar) bar.style.width = rate + "%";
+                  if (bus) bus.style.left = rate + "%";
+              }
+          });
+      }
+
+      // 3. Dynamic User Role Dispatch Authorization
+      function syncUserRoles() {
+          const auth = window.EgertonAuth;
+          if (!auth) return;
+
+          const activeUser = auth.getActiveUser();
+          const roleIndicator = document.getElementById("role-indicator");
+          const dispatchControlPanels = document.querySelectorAll(".dispatch-actions");
+
+          if (activeUser) {
+              if (activeUser.userType === "staff") {
+                  // Staff Access Granted
+                  roleIndicator.className = "role-badge staff";
+                  roleIndicator.textContent = `👮 Staff Dispatch Control Console: ${activeUser.username} (${activeUser.idNum})`;
+                  
+                  // Unlock all command action buttons
+                  dispatchControlPanels.forEach(panel => {
+                      panel.style.display = "grid";
+                  });
+              } else {
+                  // Student Access (Read-Only)
+                  roleIndicator.className = "role-badge student";
+                  roleIndicator.textContent = `🎓 Student Transit Feed: ${activeUser.username}`;
+                  dispatchControlPanels.forEach(panel => panel.style.display = "none");
+              }
+          } else {
+              // Visitor Access
+              roleIndicator.className = "role-badge visitor";
+              roleIndicator.textContent = "👤 Visitor Feed (Read-Only - Log in to access feeds)";
+              dispatchControlPanels.forEach(panel => panel.style.display = "none");
+          }
+      }
+
+      // 4. Dispatch Commands (Staff Role Triggered)
+      function dispatchVehicle(vehicleId, newStatus) {
+          const card = document.getElementById(vehicleId);
+          if (!card) return;
+
+          const pill = card.querySelector(".status-pill");
+          const speedEl = document.getElementById(`speed-${vehicleId}`);
+          const bar = document.getElementById(`progress-bar-${vehicleId}`);
+          const bus = document.getElementById(`bus-icon-${vehicleId}`);
+          const actionsPanel = document.getElementById(`actions-${vehicleId}`);
+
+          // Visual transition
+          card.classList.remove("on-route", "stopped", "maintenance");
+          card.classList.add(newStatus);
+          card.setAttribute("data-status", newStatus);
+
+          pill.textContent = newStatus.replace("-", " ");
+          pill.className = `status-pill ${newStatus}`;
+
+          const now = new Date();
+          document.getElementById(`time-${vehicleId}`).textContent = now.toLocaleTimeString();
+
+          if (newStatus === "on-route") {
+              progressRates[vehicleId] = Math.floor(10 + Math.random() * 80); // random start
+              if (speedEl) speedEl.textContent = Math.floor(25 + Math.random() * 50) + " km/h";
+              
+              if (bar) bar.style.width = progressRates[vehicleId] + "%";
+              if (bus) bus.style.left = progressRates[vehicleId] + "%";
+              
+              // Rewrite dispatch buttons
+              if (actionsPanel) {
+                  actionsPanel.innerHTML = `
+                      <button class="dispatch-btn danger" onclick="dispatchVehicle('${vehicleId}', 'stopped')">🛑 Stop Route</button>
+                      <button class="dispatch-btn" onclick="dispatchVehicle('${vehicleId}', 'maintenance')">🔧 Send to Shop</button>
+                  `;
+                  actionsPanel.style.gridTemplateColumns = "repeat(2, 1fr)";
+              }
+          } else if (newStatus === "stopped") {
+              progressRates[vehicleId] = 0;
+              if (speedEl) speedEl.textContent = "0 km/h";
+              if (bar) bar.style.width = "0%";
+              if (bus) bus.style.left = "0%";
+
+              if (actionsPanel) {
+                  actionsPanel.innerHTML = `
+                      <button class="dispatch-btn" onclick="dispatchVehicle('${vehicleId}', 'on-route')">🟢 Dispatch Route</button>
+                      <button class="dispatch-btn" onclick="dispatchVehicle('${vehicleId}', 'maintenance')">🔧 Send to Shop</button>
+                  `;
+                  actionsPanel.style.gridTemplateColumns = "repeat(2, 1fr)";
+              }
+          } else if (newStatus === "maintenance") {
+              progressRates[vehicleId] = 0;
+              if (speedEl) speedEl.textContent = "0 km/h";
+              if (bar) bar.style.width = "0%";
+              if (bus) bus.style.left = "0%";
+
+              if (actionsPanel) {
+                  actionsPanel.innerHTML = `
+                      <button class="dispatch-btn" style="grid-column: 1/-1;" onclick="dispatchVehicle('${vehicleId}', 'on-route')">🟢 Dispatch to Active Route</button>
+                  `;
+                  actionsPanel.style.gridTemplateColumns = "1fr";
+              }
+          }
+
+          // Trigger dynamic storage inspector updates
+          window.EgertonAuth.updateDevConsoleDB();
+
+          // Smooth alert
+          alert(`🛰️ Telemetry Command Dispatched!\n\nVehicle ID: ${vehicleId.toUpperCase()}\nAssigned State: ${newStatus.toUpperCase()}`);
+      }
+
+      // 5. Telemetry Refresh (GPS Refreshes)
+      function triggerTelemetryRefreshes() {
+          const btn = document.getElementById("telemetry-refresh-btn");
+          btn.textContent = "⌛ Fetching Live GPS Coordinates...";
+          btn.disabled = true;
+
+          setTimeout(() => {
+              Object.keys(progressRates).forEach(id => {
+                  const card = document.getElementById(id);
+                  if (card && card.getAttribute("data-status") === "on-route") {
+                      // Modulate speed, fuel, and telemetry
+                      const speedEl = document.getElementById(`speed-${id}`);
+                      const fuelEl = document.getElementById(`fuel-${id}`);
+                      const gpsEl = document.getElementById(`gps-${id}`);
+                      const timeEl = document.getElementById(`time-${id}`);
+
+                      if (speedEl) speedEl.textContent = Math.floor(30 + Math.random() * 50) + " km/h";
+                      if (fuelEl) fuelEl.textContent = Math.max(10, Math.floor(parseInt(fuelEl.textContent) - (1 + Math.random() * 4))) + "%";
+                      
+                      // Slightly nudge coordinates
+                      const lat = (0.35 + Math.random() * 0.05).toFixed(4);
+                      const lng = (35.91 + Math.random() * 0.05).toFixed(4);
+                      if (gpsEl) gpsEl.textContent = `${lat}° S, ${lng}° E`;
+
+                      const nextProgress = Math.min(100, progressRates[id] + Math.floor(5 + Math.random() * 15));
+                      progressRates[id] = nextProgress === 100 ? 5 : nextProgress; // reset circular track
+                      
+                      const bar = document.getElementById(`progress-bar-${id}`);
+                      const bus = document.getElementById(`bus-icon-${id}`);
+                      if (bar) bar.style.width = progressRates[id] + "%";
+                      if (bus) bus.style.left = progressRates[id] + "%";
+
+                      const now = new Date();
+                      if (timeEl) timeEl.textContent = now.toLocaleTimeString();
+                  }
+              });
+
+              btn.textContent = "⚡ Telemetry Synchronized!";
+              setTimeout(() => {
+                  btn.textContent = "⚡ Synchronize GPS Telemetry";
+                  btn.disabled = false;
+              }, 1000);
+          }, 1200);
+      }
+
+      // 6. Grid Filtering
+      function filterFleet(status, element) {
+          // Toggle Active class
+          document.querySelectorAll(".filter-chip").forEach(chip => {
+              chip.classList.remove("active");
+          });
+          element.classList.add("active");
+
+          // Filter grid cards with quick transitions
+          document.querySelectorAll(".tracking-card").forEach(card => {
+              const cStatus = card.getAttribute("data-status");
+              if (status === "all" || cStatus === status) {
+                  card.style.display = "flex";
+                  card.style.opacity = "0";
+                  setTimeout(() => { card.style.opacity = "1"; }, 50);
+              } else {
+                  card.style.display = "none";
+              }
+          });
+      }
+  </script>
+  <script src="JS/responsive-nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+body {
+  background: var(--page-bg, #f4faf4);
+}
+
+.logo h2 span {
+  color: #32c251;
+}
+
+.pulse-logo {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(0.95); }
+}
+
+.contact-form-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.contact-container {
+  background: #fff;
+  border-radius: 14px;
+  padding: 32px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e8f5e9;
+}
+
+.contact-container h2 {
+  color: #0d7c38;
+  margin-bottom: 6px;
+  font-size: 1.35rem;
+}
+
+.contact-subtitle {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-bottom: 24px;
+}
+
+.contact-container .input-group {
+  margin-bottom: 18px;
+}
+
+.contact-container label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #334155;
+  font-size: 0.9rem;
+}
+
+.contact-container .optional {
+  font-weight: 400;
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+.contact-container input,
+.contact-container textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #c9e9c9;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.contact-container input:focus,
+.contact-container textarea:focus {
+  outline: none;
+  border-color: #1a9b4a;
+}
+
+.input-group.error input,
+.input-group.error textarea {
+  border-color: #dc3545;
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 0.8rem;
+  margin-top: 4px;
+  display: block;
+  min-height: 1em;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: #1a9b4a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.submit-btn:hover {
+  background: #0d7c38;
+}
+
+.contact-success-panel {
+  background: #fff;
+  border-radius: 14px;
+  padding: 40px 32px;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(13, 124, 56, 0.12);
+  border: 1px solid #c9e9c9;
+  animation: fadeIn 0.5s ease;
+}
+
+.contact-success-panel h3 {
+  color: #0d7c38;
+  margin-bottom: 10px;
+}
+
+.contact-success-panel p {
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.contact-booking-note {
+  background: #e8f5e9;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 16px 0;
+  color: #0d7c38 !important;
+  font-size: 0.85rem !important;
+}
+
+.success-icon {
+  width: 64px;
+  height: 64px;
+  background: #1a9b4a;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  margin: 0 auto 16px;
+}
+
+.reset-btn {
+  background: transparent;
+  border: 2px solid #1a9b4a;
+  color: #1a9b4a;
+  padding: 10px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.reset-btn:hover {
+  background: #e8f5e9;
+}
+
+.contact-info-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px;
+  border: 1px solid #e8f5e9;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.contact-info-card h3 {
+  color: #0d7c38;
+  margin-bottom: 14px;
+  font-size: 1.1rem;
+}
+
+.contact-info-card ul {
+  list-style: none;
+}
+
+.contact-info-card li {
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  color: #475569;
+  line-height: 1.5;
+}
+
+#loader-wrapper {
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.egerton-spinner {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #e8f5e9;
+  border-top-color: #1a9b4a;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.contact-page-layout .booking-success-section {
+  max-width: none;
+  margin-bottom: 0;
+}
+
+@media (max-width: 900px) {
+  .contact-page-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .contact-container,
+  .contact-success-panel {
+    padding: 24px 20px;
+  }
+}

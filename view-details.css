@@ -1,0 +1,215 @@
+/* ============================================================
+   VIEW DETAILS PAGE — Full Stylesheet
+   ============================================================ */
+
+/* Wrapper */
+.details-wrapper {
+    display: flex;
+    max-width: 1100px;
+    margin: 30px auto 60px;
+    background-color: var(--bg-card);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* ── Left Panel: Vehicle Info ── */
+.vehicle-info-panel {
+    flex: 1.2;
+    padding: 30px;
+    border-right: 1px solid rgba(0,0,0,0.08);
+}
+
+.image-frame img {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease;
+}
+
+.image-frame img:hover {
+    transform: scale(1.02);
+}
+
+#details-name {
+    color: var(--brand-green);
+    font-size: 2rem;
+    margin: 20px 0 8px;
+}
+
+.capacity-tag {
+    font-size: 1rem;
+    color: var(--text-muted, #666);
+    margin-bottom: 10px;
+}
+
+/* ── Status Badge ── */
+.status-badge {
+    display: inline-block;
+    padding: 5px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+}
+
+.status-available {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-inservice {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-maintenance {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+[data-theme='dark'] .status-available  { background: #1a4a2a; color: #6fcf8a; }
+[data-theme='dark'] .status-inservice  { background: #4a3a00; color: #ffd85e; }
+[data-theme='dark'] .status-maintenance{ background: #4a1a1a; color: #f38a8a; }
+
+/* Description */
+.description {
+    margin-top: 12px;
+    line-height: 1.7;
+    color: var(--text-main);
+    font-size: 0.95rem;
+}
+
+/* ── Right Panel: Booking Form ── */
+.booking-form-panel {
+    flex: 0.8;
+    padding: 40px;
+    background-color: var(--bg-card);
+}
+
+[data-theme='dark'] .booking-form-panel {
+    background-color: #1e1e1e;
+}
+
+.booking-form-panel h3 {
+    font-size: 1.4rem;
+    margin-bottom: 24px;
+    color: var(--brand-green);
+    border-bottom: 2px solid var(--brand-green);
+    padding-bottom: 8px;
+}
+
+.booking-form-panel label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-main);
+}
+
+.booking-form-panel input {
+    width: 100%;
+    padding: 11px 14px;
+    margin-bottom: 18px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background: var(--bg-card);
+    color: var(--text-main);
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.booking-form-panel input:focus {
+    outline: none;
+    border-color: var(--brand-green);
+    box-shadow: 0 0 0 3px rgba(34,139,34,0.12);
+}
+
+.details-btn {
+    width: 100%;
+    padding: 13px;
+    background: var(--brand-green);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.25s, transform 0.15s;
+    margin-top: 4px;
+}
+
+.details-btn:hover:not(:disabled) {
+    background: #1a6e1a;
+    transform: translateY(-1px);
+}
+
+/* ── Booking Confirmation Message ── */
+.confirmation-msg {
+    margin-top: 20px;
+    padding: 16px 18px;
+    background: #eaf7ec;
+    border-left: 4px solid #28a745;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: #155724;
+    animation: fadeIn 0.4s ease;
+}
+
+[data-theme='dark'] .confirmation-msg {
+    background: #1a3d22;
+    color: #a3d9a5;
+    border-left-color: #4caf50;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Note */
+.note {
+    font-size: 0.82rem;
+    color: var(--text-muted, #888);
+    margin-top: 14px;
+    font-style: italic;
+}
+
+/* ── Responsive ── */
+@media (max-width: 992px) {
+  .details-wrapper {
+    flex-direction: column;
+    margin: 16px auto;
+    max-width: calc(100% - 32px);
+  }
+
+  .vehicle-info-panel {
+    border-right: none;
+    border-bottom: 1px solid var(--border-color, rgba(0,0,0,0.08));
+  }
+}
+
+@media (max-width: 800px) {
+    .details-wrapper {
+        flex-direction: column;
+        margin: 16px;
+    }
+
+    .vehicle-info-panel {
+        border-right: none;
+        border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .image-frame img {
+        height: 220px;
+    }
+
+    #details-name {
+        font-size: 1.5rem;
+    }
+}

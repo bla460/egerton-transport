@@ -1,0 +1,8 @@
+/* Services page — complements nojacss.css shared components */
+body {
+    background: var(--page-bg, #f4faf4);
+}
+
+.logo h2 span {
+  color: #32c251;
+}

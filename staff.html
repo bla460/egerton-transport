@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Directory — Egerton University Transport</title>
+    <script src="JS/theme.js"></script>
+    <link rel="stylesheet" href="nojacss.css">
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="staff.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="logo">
+      <img src="logo/logo.webp" alt="Egerton University Logo">
+      <h2>Egerton University <span>Transport</span></h2>
+    </div>
+    <nav class="nav-links">
+      <a href="home.html">Home</a>
+      <a href="vehicles.html">Vehicles</a>
+      <a href="service.html">Services</a>
+      <a href="Tracking.html">Tracking</a>
+      <a href="staff.html" style="color:#0d7c38;font-weight:600;">Staff</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <button class="login-btn" id="login-nav-btn">Login</button>
+
+    <div id="login" class="popup">
+      <div class="popup-box">
+        <button class="close" id="close-login" type="button" style="background:none;border:none;cursor:pointer;">&times;</button>
+        <h2 style="color:var(--brand-green);margin-bottom:15px;">Login</h2>
+        <form id="login-form-inner" style="display:flex;flex-direction:column;gap:10px;">
+          <div class="input-group">
+            <label for="login-username">Username or Email</label>
+            <input type="text" id="login-username" placeholder="j.doe@egerton.ac.ke" required>
+            <span class="input-feedback-msg"></span>
+          </div>
+          <div class="input-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" placeholder="••••••••" required>
+            <span class="input-feedback-msg"></span>
+          </div>
+          <button type="submit" style="margin-top:10px;">Login</button>
+        </form>
+        <p style="margin-top:10px;font-size:12px;"><button id="to-forgot" type="button" style="background:none;border:none;color:var(--brand-green);cursor:pointer;text-decoration:underline;font-family:inherit;">Forgot Password?</button></p>
+        <p style="font-size:12px;margin-top:10px;">Don't have an account? <button id="to-signup" type="button" style="background:none;border:none;color:var(--brand-green);cursor:pointer;text-decoration:underline;font-family:inherit;font-weight:600;">Create one</button></p>
+      </div>
+    </div>
+
+    <div id="signup" class="popup">
+      <div class="popup-box" style="width:340px;">
+        <button class="close" id="close-signup" type="button" style="background:none;border:none;cursor:pointer;">&times;</button>
+        <h2 style="color:var(--brand-green);margin-bottom:15px;">Create Account</h2>
+        <form id="signup-form-inner" style="display:flex;flex-direction:column;gap:10px;">
+          <div class="input-group">
+            <label for="signup-username">Username</label>
+            <input type="text" id="signup-username" placeholder="alex_egerton" required>
+            <span class="input-feedback-msg"></span>
+          </div>
+          <div class="input-group">
+            <label for="signup-email">University Email</label>
+            <input type="email" id="signup-email" placeholder="example@egerton.ac.ke" required>
+            <span class="input-feedback-msg"></span>
+          </div>
+          <div class="input-group">
+            <label for="signup-usertype">Account Type</label>
+            <select id="signup-usertype" required>
+              <option value="student">Student</option>
+              <option value="staff">Staff / Faculty</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="signup-idnum">Reg No / Staff ID</label>
+            <input type="text" id="signup-idnum" placeholder="S23/04812/21" required>
+            <span class="input-feedback-msg"></span>
+          </div>
+          <div class="input-group">
+            <label for="signup-password">Password</label>
+            <input type="password" id="signup-password" placeholder="••••••••" required>
+            <span class="input-feedback-msg"></span>
+          </div>
+          <button type="submit" style="margin-top:10px;">Create Account</button>
+        </form>
+        <p style="font-size:12px;margin-top:10px;">Already have an account? <button id="to-login" type="button" style="background:none;border:none;color:var(--brand-green);cursor:pointer;text-decoration:underline;font-family:inherit;font-weight:600;">Login here</button></p>
+      </div>
+    </div>
+
+    <div id="forgot" class="popup">
+      <div class="popup-box">
+        <button class="close" id="close-forgot" type="button" style="background:none;border:none;cursor:pointer;">&times;</button>
+        <h2 style="color:var(--brand-green);margin-bottom:15px;">Forgot Password</h2>
+        <p style="font-size:12px;margin-bottom:15px;color:var(--text-light);">Enter your university email to reset your password.</p>
+        <form id="forgot-form-inner" style="display:flex;flex-direction:column;gap:10px;">
+          <div class="input-group">
+            <label for="forgot-email">University Email</label>
+            <input type="email" id="forgot-email" placeholder="example@egerton.ac.ke" required>
+            <span class="input-feedback-msg"></span>
+          </div>
+          <button type="submit" style="margin-top:10px;">Reset Password</button>
+        </form>
+        <p style="margin-top:10px;font-size:12px;"><button id="forgot-to-login" type="button" style="background:none;border:none;color:var(--brand-green);cursor:pointer;text-decoration:underline;font-family:inherit;">Back to Login</button></p>
+      </div>
+    </div>
+  </header>
+
+  <section class="staff-hero">
+    <h2>Our Dedicated Team</h2>
+    <p>Professionals ensuring safe, efficient, and reliable transport for the Egerton University community.</p>
+  </section>
+
+  <section class="staff-section">
+    <section id="booking-success-section" class="booking-success-section" aria-label="Booking confirmation"></section>
+
+    <div class="booking-assist-banner">
+      <div>
+        <strong>Booking support</strong>
+        <p>For trip changes or urgent requests, contact the Booking Desk with your ticket reference (e.g. EGT-48291-K).</p>
+      </div>
+      <a href="contact.html" class="login-btn" style="text-decoration:none;">Contact Booking Desk</a>
+    </div>
+
+    <h2 class="section-title">Staff Directory</h2>
+
+    <div class="department-filter">
+      <button type="button" class="filter-btn active" data-filter="all">All Departments</button>
+      <button type="button" class="filter-btn" data-filter="administration">Administration</button>
+      <button type="button" class="filter-btn" data-filter="booking">Booking Desk</button>
+      <button type="button" class="filter-btn" data-filter="fleet">Fleet Operations</button>
+      <button type="button" class="filter-btn" data-filter="maintenance">Maintenance</button>
+    </div>
+
+    <div class="staff-grid">
+      <div class="staff-card" data-department="administration">
+        <div class="staff-img">👨‍💼</div>
+        <div class="staff-info">
+          <h3 class="staff-name">Dr. James Mwangi</h3>
+          <p class="staff-position">Director of Transport</p>
+          <span class="staff-department">Administration</span>
+          <div class="staff-contact">
+            <div class="contact-item"><span class="ci-icon">📧</span> transport.director@egerton.ac.ke</div>
+            <div class="contact-item"><span class="ci-icon">📞</span> +254 700 123 456</div>
+            <div class="contact-item"><span class="ci-icon">📍</span> Transport Block, Room 101</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="staff-card" data-department="booking">
+        <div class="staff-img">👩‍💼</div>
+        <div class="staff-info">
+          <h3 class="staff-name">Grace Wanjiku</h3>
+          <p class="staff-position">Booking Desk Supervisor</p>
+          <span class="staff-department">Booking Desk</span>
+          <div class="staff-contact">
+            <div class="contact-item"><span class="ci-icon">📧</span> bookings@egerton.ac.ke</div>
+            <div class="contact-item"><span class="ci-icon">📞</span> +254 712 345 678</div>
+            <div class="contact-item"><span class="ci-icon">📍</span> Booking Office, Ground Floor</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="staff-card" data-department="fleet">
+        <div class="staff-img">👮‍♂️</div>
+        <div class="staff-info">
+          <h3 class="staff-name">Peter Otieno</h3>
+          <p class="staff-position">Fleet Operations Manager</p>
+          <span class="staff-department">Fleet Operations</span>
+          <div class="staff-contact">
+            <div class="contact-item"><span class="ci-icon">📧</span> fleet.ops@egerton.ac.ke</div>
+            <div class="contact-item"><span class="ci-icon">📞</span> +254 733 456 789</div>
+            <div class="contact-item"><span class="ci-icon">📍</span> Vehicle Yard, Main Gate</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="staff-card" data-department="maintenance">
+        <div class="staff-img">👨‍🔧</div>
+        <div class="staff-info">
+          <h3 class="staff-name">David Kiprono</h3>
+          <p class="staff-position">Chief Fleet Mechanic</p>
+          <span class="staff-department">Maintenance</span>
+          <div class="staff-contact">
+            <div class="contact-item"><span class="ci-icon">📧</span> maintenance@egerton.ac.ke</div>
+            <div class="contact-item"><span class="ci-icon">📞</span> +254 745 567 890</div>
+            <div class="contact-item"><span class="ci-icon">📍</span> Workshop, Transport Yard</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="staff-card" data-department="booking">
+        <div class="staff-img">👩‍🎓</div>
+        <div class="staff-info">
+          <h3 class="staff-name">Faith Njeri</h3>
+          <p class="staff-position">Student Booking Officer</p>
+          <span class="staff-department">Booking Desk</span>
+          <div class="staff-contact">
+            <div class="contact-item"><span class="ci-icon">📧</span> student.transport@egerton.ac.ke</div>
+            <div class="contact-item"><span class="ci-icon">📞</span> +254 756 678 901</div>
+            <div class="contact-item"><span class="ci-icon">📍</span> Student Centre, Desk 4</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="staff-card" data-department="administration">
+        <div class="staff-img">👨‍💻</div>
+        <div class="staff-info">
+          <h3 class="staff-name">Samuel Mutua</h3>
+          <p class="staff-position">Transport Systems Administrator</p>
+          <span class="staff-department">Administration</span>
+          <div class="staff-contact">
+            <div class="contact-item"><span class="ci-icon">📧</span> transport.it@egerton.ac.ke</div>
+            <div class="contact-item"><span class="ci-icon">📞</span> +254 767 789 012</div>
+            <div class="contact-item"><span class="ci-icon">📍</span> IT Office, Transport Block</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <a href="contact.html"><div class="chat-btn" title="Contact us">💬</div></a>
+
+  <footer class="footer-pro">
+    <div class="footer-grid">
+      <div>
+        <h3>Transport Department</h3>
+        <p style="font-size:0.9rem;opacity:0.9;">Egerton University — Njoro Campus. Safe mobility for our academic community.</p>
+      </div>
+      <div>
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="home.html">Home</a></li>
+          <li><a href="service.html">Services</a></li>
+          <li><a href="vehicles.html">Fleet</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Office Hours</h3>
+        <ul>
+          <li>Mon – Fri: 8:00 AM – 5:00 PM</li>
+          <li>Emergency line: 24/7</li>
+          <li>info@egerton.ac.ke</li>
+        </ul>
+      </div>
+    </div>
+    <p class="copyright">&copy; 2026 Egerton University Transport Department. All rights reserved.</p>
+  </footer>
+
+  <script src="JS/auth-booking.js"></script>
+  <script src="staff.js"></script>
+  <script src="JS/responsive-nav.js"></script>
+</body>
+</html>

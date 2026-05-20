@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Egerton University Transport Department</title>
+  <meta name="description" content="Book official university vehicles, track fleet status, and manage transport for Egerton University.">
+  <script src="JS/theme.js"></script>
+  <link rel="stylesheet" href="nojacss.css">
+  <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="responsive.css">
+  <link rel="stylesheet" href="home.css">
+</head>
+<body class="home-page">
+
+  <div id="loader-wrapper">
+    <img src="logo/logo.webp" alt="Egerton University Logo" class="pulse-logo">
+    <div id="progress-container">
+      <div id="progress-bar"></div>
+    </div>
+    <p id="progress-text">0% Loading...</p>
+  </div>
+
+  <header class="navbar">
+    <div class="logo">
+      <img src="logo/logo.webp" alt="Logo">
+      <h2>Egerton University Transport</h2>
+    </div>
+
+    <nav class="nav-links">
+      <a href="home.html" style="color:#0d7c38;font-weight:600;">Home</a>
+      <a href="vehicles.html">Vehicles</a>
+      <a href="service.html">Services</a>
+      <a href="Tracking.html">Tracking</a>
+      <a href="staff.html">Staff</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+    <button class="login-btn" id="login-nav-btn">Login</button>
+
+    <div id="login" class="popup">
+      <div class="popup-box">
+        <button class="close" id="close-login" type="button" style="background:none;border:none;cursor:pointer;">&times;</button>
+        <h2 style="color:var(--brand-green);margin-bottom:15px;">Login</h2>
+        <form id="login-form-inner" style="display:flex;flex-direction:column;gap:10px;">
+          <div class="input-group">
+            <label for="login-username">Username or Email</label>
+            <input type="text" id="login-username" placeholder="j.doe@egerton.ac.ke" required>
+            <span class="input-feedback-msg"></span>
+          </div>
+          <div class="input-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" placeholder="••••••••" required>
+            <span class="input-feedback-msg"></span>
+          </div>
+          <button type="submit" style="margin-top:10px;">Login</button>
+        </form>
+        <p style="margin-top:10px;font-size:12px;"><button id="to-forgot" type="button" style="background:none;border:none;color:var(--brand-green);cursor:pointer;text-decoration:underline;font-family:inherit;">Forgot Password?</button></p>
+        <p style="font-size:12px;margin-top:10px;">Don't have an account? <button id="to-signup" type="button" style="background:none;border:none;color:var(--brand-green);cursor:pointer;text-decoration:underline;font-family:inherit;font-weight:600;">Create one</button></p>
+      </div>
+    </div>
+
+    <div id="signup" class="popup">
+      <div class="popup-box" style="width:340px;">
+        <button class="close" id="close-signup" type="button" style="background:none;border:none;cursor:pointer;">&times;</button>
+        <h2 style="color:var(--brand-green);margin-bottom:15px;">Create Account</h2>
+        <form id="signup-form-inner" style="display:flex;flex-direction:column;gap:10px;">
+          <div class="input-group">
+            <label for="signup-username">Username</label>
+            <input type="text" id="signup-username" placeholder="alex_egerton" required>
+            <span class="input-feedback-msg"></span>
+          </div>
+          <div class="input-group">
+            <label for="signup-email">University Email</label>
+            <input type="email" id="signup-email" placeholder="example@egerton.ac.ke" required>
+            <span class="input-feedback-msg"></span>
+          </div>
+          <div class="input-group">
+            <label for="signup-usertype">Account Type</label>
+            <select id="signup-usertype" required>
+              <option value="student">Student</option>
+              <option value="staff">Staff / Faculty</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="signup-idnum">Reg No / Staff ID</label>
+            <input type="text" id="signup-idnum" placeholder="S23/04812/21" required>
+            <span class="input-feedback-msg"></span>
+          </div>
+          <div class="input-group">
+            <label for="signup-password">Password</label>
+            <input type="password" id="signup-password" placeholder="••••••••" required>
+            <span class="input-feedback-msg"></span>
+          </div>
+          <button type="submit" style="margin-top:10px;">Create Account</button>
+        </form>
+        <p style="font-size:12px;margin-top:10px;">Already have an account? <button id="to-login" type="button" style="background:none;border:none;color:var(--brand-green);cursor:pointer;text-decoration:underline;font-family:inherit;font-weight:600;">Login here</button></p>
+      </div>
+    </div>
+
+    <div id="forgot" class="popup">
+      <div class="popup-box">
+        <button class="close" id="close-forgot" type="button" style="background:none;border:none;cursor:pointer;">&times;</button>
+        <h2 style="color:var(--brand-green);margin-bottom:15px;">Forgot Password</h2>
+        <p style="font-size:12px;margin-bottom:15px;color:var(--text-light);">Enter your university email to reset your password.</p>
+        <form id="forgot-form-inner" style="display:flex;flex-direction:column;gap:10px;">
+          <div class="input-group">
+            <label for="forgot-email">University Email</label>
+            <input type="email" id="forgot-email" placeholder="example@egerton.ac.ke" required>
+            <span class="input-feedback-msg"></span>
+          </div>
+          <button type="submit" style="margin-top:10px;">Reset Password</button>
+        </form>
+        <p style="margin-top:10px;font-size:12px;"><button id="forgot-to-login" type="button" style="background:none;border:none;color:var(--brand-green);cursor:pointer;text-decoration:underline;font-family:inherit;">Back to Login</button></p>
+      </div>
+    </div>
+  </header>
+
+  <section class="home-hero-pro">
+    <div class="hero-inner">
+      <span class="hero-badge">Njoro Campus · Official Fleet</span>
+      <h1>Safe, reliable transport for the Egerton community</h1>
+      <p class="hero-lead">Book buses, vans, and shuttles for academic trips, field studies, and official university business — with instant confirmation and live fleet tracking.</p>
+      <div class="hero-actions">
+        <a href="vehicles.html" class="hero-btn-primary">Book a Vehicle</a>
+        <a href="Tracking.html" class="hero-btn-secondary">Live Tracking</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="home-stats">
+    <div class="stat-card">
+      <span class="stat-value">12+</span>
+      <span class="stat-label">Fleet vehicles</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value">24/7</span>
+      <span class="stat-label">Emergency dispatch</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value">Instant</span>
+      <span class="stat-label">Booking confirmation</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value">100%</span>
+      <span class="stat-label">University operated</span>
+    </div>
+  </div>
+
+  <section class="home-section">
+    <div class="home-section-header">
+      <h2>Why use Transport Department?</h2>
+      <p>Everything you need for official university travel in one portal.</p>
+    </div>
+    <div class="features-row">
+      <article class="feature-card-pro">
+        <div class="feat-icon">🚌</div>
+        <h3>Diverse Fleet</h3>
+        <p>Passenger buses, staff vans, cargo trucks, campus shuttles, and more — matched to your trip size.</p>
+        <a href="vehicles.html">Browse fleet →</a>
+      </article>
+      <article class="feature-card-pro">
+        <div class="feat-icon">📋</div>
+        <h3>Online Booking</h3>
+        <p>Request vehicles, receive an approved ticket reference, and manage trips from your dashboard.</p>
+        <a href="vehicles.html">Start booking →</a>
+      </article>
+      <article class="feature-card-pro">
+        <div class="feat-icon">📍</div>
+        <h3>Live Tracking</h3>
+        <p>Monitor assigned routes and vehicle status in real time during active trips.</p>
+        <a href="Tracking.html">Open tracking →</a>
+      </article>
+    </div>
+
+    <div class="home-section-header">
+      <h2>Popular vehicles</h2>
+      <p>Recently available options from our fleet.</p>
+    </div>
+    <div class="fleet-preview-grid">
+      <article class="fleet-card-pro">
+        <img src="Images/Cool Bus.jpg" alt="Passengers Bus">
+        <div class="fleet-card-body">
+          <h4>Passengers Bus</h4>
+          <p>Capacity: 64 passengers</p>
+          <span class="status-available">Available</span>
+          <a href="view-details.html?id=passengers-bus-1">View details →</a>
+        </div>
+      </article>
+      <article class="fleet-card-pro">
+        <img src="Images/bus 4.jpg" alt="Students Bus">
+        <div class="fleet-card-body">
+          <h4>Students Bus</h4>
+          <p>Capacity: 50 passengers</p>
+          <span class="status-available">In service</span>
+          <a href="view-details.html?id=students-bus-1">View details →</a>
+        </div>
+      </article>
+      <article class="fleet-card-pro">
+        <img src="Images/hiace 2.jpg" alt="Staff Van">
+        <div class="fleet-card-body">
+          <h4>Staff Van</h4>
+          <p>Capacity: 15 seats</p>
+          <span class="status-available">Available</span>
+          <a href="view-details.html?id=staff-van-1">View details →</a>
+        </div>
+      </article>
+      <article class="fleet-card-pro">
+        <img src="Images/White Van 1.jpg" alt="Campus Shuttle">
+        <div class="fleet-card-body">
+          <h4>Campus Shuttle</h4>
+          <p>Capacity: 20 passengers</p>
+          <span class="status-available">Available</span>
+          <a href="view-details.html?id=campus-shuttle-1">View details →</a>
+        </div>
+      </article>
+    </div>
+
+    <div class="home-cta-strip">
+      <h3>Need help with a booking?</h3>
+      <p>Our booking desk and staff directory are ready to assist with schedules, changes, and special requests.</p>
+      <a href="contact.html" class="hero-btn-primary">Contact Department</a>
+    </div>
+  </section>
+
+  <a href="contact.html"><div class="chat-btn" title="Contact us">💬</div></a>
+
+  <footer class="footer">
+    <p>&copy; 2026 Egerton University Transport Department. All rights reserved.</p>
+  </footer>
+
+  <script src="JS/auth-booking.js"></script>
+  <script src="JS/home.js"></script>
+  <script src="JS/responsive-nav.js"></script>
+</body>
+</html>

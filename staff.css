@@ -1,0 +1,239 @@
+/* Staff directory — Egerton Transport */
+body {
+    background: var(--page-bg, #f4faf4);
+    color: var(--text-dark, #1e293b);
+  line-height: 1.6;
+}
+
+.logo h2 span {
+  color: #32c251;
+}
+
+.staff-hero {
+  background: linear-gradient(135deg, #0d7c38, #1a9b4a);
+  color: #fff;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.staff-hero h2 {
+  font-size: 1.75rem;
+  margin-bottom: 10px;
+}
+
+.staff-hero p {
+  max-width: 600px;
+  margin: 0 auto;
+  opacity: 0.95;
+}
+
+.staff-section {
+  padding: 40px 24px 60px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 28px;
+  color: #0d7c38;
+  font-size: 1.5rem;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.section-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: #1a9b4a;
+  border-radius: 2px;
+}
+
+.department-filter {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.department-filter .filter-btn {
+  padding: 8px 18px;
+  background: #fff;
+  border: 1px solid #c9e9c9;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.department-filter .filter-btn:hover,
+.department-filter .filter-btn.active {
+  background: #0d7c38;
+  color: #fff;
+  border-color: #0d7c38;
+}
+
+.staff-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.staff-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e8f5e9;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.staff-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(13, 124, 56, 0.12);
+}
+
+.staff-img {
+  height: 120px;
+  background: linear-gradient(135deg, #e8f5e9, #c9e9c9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+}
+
+.staff-info {
+  padding: 1.25rem 1.5rem 1.5rem;
+}
+
+.staff-name {
+  font-size: 1.15rem;
+  margin-bottom: 4px;
+  color: #0d7c38;
+}
+
+.staff-position {
+  font-weight: 600;
+  color: #1a9b4a;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+.staff-department {
+  display: inline-block;
+  background: #e8f5e9;
+  color: #0d7c38;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin-bottom: 14px;
+}
+
+.staff-contact {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 14px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+.contact-item .ci-icon {
+  color: #0d7c38;
+  flex-shrink: 0;
+}
+
+.booking-assist-banner {
+  background: #fff;
+  border: 1px solid #c9e9c9;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 32px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.booking-assist-banner p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.9rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+.booking-assist-banner strong {
+  color: #0d7c38;
+  display: block;
+  margin-bottom: 4px;
+  font-size: 1rem;
+}
+
+.footer-pro {
+  background: #0d7c38;
+  color: #fff;
+  padding: 40px 24px 20px;
+  margin-top: 40px;
+}
+
+.footer-pro .footer-grid {
+  max-width: 1100px;
+  margin: 0 auto 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 28px;
+}
+
+.footer-pro h3 {
+  font-size: 1rem;
+  margin-bottom: 12px;
+}
+
+.footer-pro ul {
+  list-style: none;
+}
+
+.footer-pro ul li {
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.footer-pro a {
+  color: #fff;
+  text-decoration: none;
+  opacity: 0.85;
+}
+
+.footer-pro a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.footer-pro .copyright {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+@media (max-width: 768px) {
+  .staff-grid {
+    grid-template-columns: 1fr;
+  }
+}
