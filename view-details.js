@@ -114,7 +114,10 @@ if (vehicle) {
 
     // Status badge — use admin fleet overrides when available
     const statusEl = document.getElementById("details-status");
-    if (statusEl) {
+    const submitBtn = document.getElementById("submit-btn");
+
+    function refreshStatusBadge() {
+        if (!statusEl) return;
         const liveStatus =
             window.EgertonAuth && id
                 ? window.EgertonAuth.getVehicleStatus(id)
@@ -125,7 +128,31 @@ if (vehicle) {
         if (liveStatus === "Available") statusEl.classList.add("status-available");
         else if (liveStatus === "In Service") statusEl.classList.add("status-inservice");
         else statusEl.classList.add("status-maintenance");
+
+        if (submitBtn) {
+            if (liveStatus === "Available") {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Submit Booking Request";
+                submitBtn.style.opacity = "";
+                submitBtn.style.cursor = "";
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.textContent = liveStatus === "In Service" ? "Currently In Service" : "Under Maintenance";
+                submitBtn.style.opacity = "0.6";
+                submitBtn.style.cursor = "not-allowed";
+            }
+        }
     }
+
+    refreshStatusBadge();
+
+    // Listen for admin changes to fleet state
+    window.addEventListener("egerton-fleet-updated", refreshStatusBadge);
+    window.addEventListener("storage", (event) => {
+        if (event.key === "egerton_transport_fleet") {
+            refreshStatusBadge();
+        }
+    });
 
     // Set Max passengers on the input field dynamically
     maxPassengers = getPassengerCapacity(vehicle.capacity);
