@@ -15,6 +15,7 @@ const EGERTON_SESSION_KEY = "egerton_transport_active_user";
 const EGERTON_FLEET_KEY = "egerton_transport_fleet";
 const EGERTON_ISSUES_KEY = "egerton_transport_issues";
 const EGERTON_EMAILS_KEY = "egerton_transport_email_log";
+const EGERTON_CONTACTS_KEY = "egerton_transport_contact_requests";
 
 const API_BASE_URL = typeof window !== "undefined" && window.location.protocol.startsWith("http")
     ? window.location.origin
@@ -120,6 +121,10 @@ if (!localStorage.getItem(EGERTON_BOOKINGS_KEY)) {
     localStorage.setItem(EGERTON_BOOKINGS_KEY, JSON.stringify([]));
 }
 
+if (!localStorage.getItem(EGERTON_CONTACTS_KEY)) {
+    localStorage.setItem(EGERTON_CONTACTS_KEY, JSON.stringify([]));
+}
+
 if (!localStorage.getItem(EGERTON_FLEET_KEY)) {
     localStorage.setItem(EGERTON_FLEET_KEY, JSON.stringify(DEFAULT_FLEET));
 }
@@ -172,6 +177,18 @@ function getUsers() {
 }
 function getBookings() {
     return JSON.parse(localStorage.getItem(EGERTON_BOOKINGS_KEY)) || [];
+}
+function getContactRequests() {
+    return JSON.parse(localStorage.getItem(EGERTON_CONTACTS_KEY)) || [];
+}
+function addContactRequest(contactRequest) {
+    const requests = getContactRequests();
+    requests.unshift(contactRequest);
+    localStorage.setItem(EGERTON_CONTACTS_KEY, JSON.stringify(requests.slice(0, 50)));
+    if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('egerton-contact-requests-updated'));
+    }
+    return contactRequest;
 }
 function getSentEmails() {
     return JSON.parse(localStorage.getItem(EGERTON_EMAILS_KEY)) || [];
@@ -1313,5 +1330,7 @@ window.EgertonAuth = {
     updateDevConsoleDB,
     renderBookingsDashboard,
     renderBookingSuccessSection,
-    initNavbarState
+    initNavbarState,
+    getContactRequests,
+    addContactRequest
 };

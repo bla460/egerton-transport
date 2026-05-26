@@ -90,6 +90,25 @@ document.addEventListener("DOMContentLoaded", function () {
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     if (!validateContactForm()) return;
+
+    const contactRequest = {
+      requestId: `CONTACT-${Date.now()}-${Math.floor(Math.random() * 9000 + 1000)}`,
+      name: document.getElementById("user-name").value.trim(),
+      email: document.getElementById("user-email").value.trim(),
+      message: document.getElementById("message").value.trim(),
+      bookingRef: document.getElementById("booking-ref")?.value.trim() || null,
+      submittedAt: new Date().toISOString()
+    };
+
+    if (window.EgertonAuth && typeof window.EgertonAuth.addContactRequest === "function") {
+      window.EgertonAuth.addContactRequest(contactRequest);
+    } else {
+      const stored = JSON.parse(localStorage.getItem("egerton_transport_contact_requests") || "[]");
+      stored.unshift(contactRequest);
+      localStorage.setItem("egerton_transport_contact_requests", JSON.stringify(stored.slice(0, 50)));
+      window.dispatchEvent(new Event('egerton-contact-requests-updated'));
+    }
+
     showContactSuccess();
   });
 

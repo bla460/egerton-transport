@@ -309,6 +309,10 @@
           <div class="stat-value" id="stat-open-issues">0</div>
           <div class="stat-label">⚠️ Open Issues</div>
         </div>
+        <div class="stat-box">
+          <div class="stat-value" id="stat-contact-requests">0</div>
+          <div class="stat-label">📬 Contact Requests</div>
+        </div>
       </div>
 
       <!-- Main Dashboard Grid -->
@@ -416,6 +420,16 @@
         </div>
       </div>
 
+      <!-- Contact Requests -->
+      <div class="dashboard-panel" style="margin-bottom: 20px;">
+        <div class="panel-header">
+          <h2>📬 Contact Requests</h2>
+        </div>
+        <div id="contact-requests-list" class="users-list">
+          <div class="empty-state">No contact requests</div>
+        </div>
+      </div>
+
       <!-- Email Log Summary -->
       <div class="dashboard-panel">
         <div class="panel-header">
@@ -478,6 +492,7 @@
       const allUsers = window.EgertonAuth.getUsers() || [];
       const allBookings = await fetchAllBookings();
       const allIssues = window.EgertonAuth.getTransportIssues ? window.EgertonAuth.getTransportIssues() : [];
+      const contactRequests = window.EgertonAuth.getContactRequests ? window.EgertonAuth.getContactRequests() : [];
       const allEmails = window.EgertonAuth.getSentEmails ? window.EgertonAuth.getSentEmails() : [];
       const fleet = window.EgertonAuth.getFleet ? window.EgertonAuth.getFleet() : {};
 
@@ -488,6 +503,7 @@
       document.getElementById('stat-vehicles').textContent = Object.keys(fleet).length;
       document.getElementById('stat-maintenance-vehicles').textContent = Object.values(fleet).filter(v => v.status === 'Under Maintenance').length;
       document.getElementById('stat-open-issues').textContent = allIssues.filter(i => i.status === 'Open').length;
+      document.getElementById('stat-contact-requests').textContent = contactRequests.length;
 
       // User breakdown
       document.getElementById('count-students').textContent = allUsers.filter(u => u.userType === 'student').length;
@@ -567,6 +583,18 @@
           <div class="list-item-detail">📝 ${issue.notes}</div>
         </div>
       `).join('') || '<div class="empty-state">No open issues</div>';
+
+      // Contact Requests
+      document.getElementById('contact-requests-list').innerHTML = contactRequests.slice(0, 10).map(request => `
+        <div class="list-item" style="border-left-color: #3b82f6;">
+          <div class="list-item-header">
+            <div class="list-item-title">${request.name} — ${request.bookingRef ? `Ref: ${request.bookingRef}` : request.email}</div>
+            <span class="status-badge status-pending">${new Date(request.submittedAt).toLocaleDateString('en-KE', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+          </div>
+          <div class="list-item-detail">📧 ${request.email}</div>
+          <div class="list-item-detail">💬 ${request.message.length > 120 ? request.message.slice(0, 120) + '…' : request.message}</div>
+        </div>
+      `).join('') || '<div class="empty-state">No contact requests</div>';
 
       // Email Logs
       document.getElementById('email-log-list').innerHTML = allEmails.slice(0, 8).map(email => `
