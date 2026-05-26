@@ -605,3 +605,382 @@ body {
     padding-bottom: max(15px, env(safe-area-inset-bottom));
   }
 }
+
+/* ════════════════════════════════════════════════════════════
+   ADMIN PAGE RESPONSIVE ENHANCEMENTS
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Tablet and below (≤ 992px) – Admin specific ── */
+@media (max-width: 992px) {
+  .admin-hero {
+    padding: 24px 16px;
+  }
+
+  .admin-hero-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  .admin-hero h1 {
+    font-size: 1.35rem;
+  }
+
+  .admin-hero p {
+    font-size: 0.85rem;
+  }
+
+  .admin-main {
+    padding: 18px 16px;
+  }
+
+  .admin-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .admin-stat {
+    padding: 16px;
+  }
+
+  .admin-stat .val {
+    font-size: 1.5rem;
+  }
+
+  .admin-stat .lbl {
+    font-size: 0.75rem;
+  }
+
+  .admin-actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .admin-tabs {
+    gap: 6px;
+    padding-bottom: 10px;
+  }
+
+  .admin-tab {
+    padding: 9px 14px;
+    font-size: 0.85rem;
+  }
+
+  .admin-card {
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  .admin-card-header {
+    gap: 10px;
+  }
+
+  .admin-card-header h3 {
+    font-size: 0.95rem;
+  }
+
+  .admin-meta {
+    font-size: 0.75rem;
+  }
+
+  .admin-actions {
+    gap: 6px;
+  }
+
+  .admin-btn {
+    padding: 7px 12px;
+    font-size: 0.8rem;
+  }
+
+  .fleet-grid-admin {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .issue-form {
+    max-width: 100%;
+    gap: 10px;
+  }
+
+  .issue-form input,
+  .issue-form select,
+  .issue-form textarea {
+    padding: 9px 10px;
+    font-size: 0.9rem;
+  }
+
+  .admin-denied {
+    margin: 40px 16px;
+    padding: 24px;
+  }
+
+  .admin-denied h2 {
+    font-size: 1.2rem;
+  }
+
+  .admin-denied p {
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+  }
+}
+
+/* ── Phone (≤ 576px) – Admin specific ── */
+@media (max-width: 576px) {
+  .admin-hero {
+    padding: 16px 12px;
+  }
+
+  .admin-hero-inner {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .admin-hero h1 {
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+  }
+
+  .admin-hero p {
+    font-size: 0.8rem;
+    margin-bottom: 0;
+  }
+
+  .admin-role-badge {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+
+  .admin-main {
+    padding: 14px 12px;
+  }
+
+  .admin-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .admin-stat {
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  .admin-stat .val {
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+  }
+
+  .admin-stat .lbl {
+    font-size: 0.7rem;
+  }
+
+  .admin-actions-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .admin-tabs {
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .admin-tab {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 0.8rem;
+    text-align: center;
+    border-radius: 8px;
+  }
+
+  .admin-tab .badge {
+    font-size: 0.65rem;
+    padding: 1px 4px;
+  }
+
+  .admin-panel h2 {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+  }
+
+  .admin-card {
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+  }
+
+  .admin-card-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .admin-card-header h3 {
+    font-size: 0.9rem;
+  }
+
+  .admin-meta {
+    font-size: 0.7rem;
+    line-height: 1.4;
+  }
+
+  .admin-actions {
+    width: 100%;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .admin-actions .admin-btn {
+    flex: 1;
+    min-width: 70px;
+    padding: 6px 8px;
+    font-size: 0.75rem;
+  }
+
+  .status-pill-admin {
+    padding: 3px 8px;
+    font-size: 0.65rem;
+  }
+
+  .fleet-grid-admin {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .fleet-admin-card select {
+    padding: 8px;
+    font-size: 0.85rem;
+  }
+
+  .issue-form {
+    max-width: 100%;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .issue-form input,
+  .issue-form select,
+  .issue-form textarea {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+  }
+
+  .issue-form textarea {
+    resize: vertical;
+  }
+
+  .admin-btn {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+
+  .admin-denied {
+    margin: 20px 12px;
+    padding: 16px;
+    border-radius: 10px;
+  }
+
+  .admin-denied h2 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+
+  .admin-denied p {
+    font-size: 0.8rem;
+    margin-bottom: 12px;
+  }
+
+  .admin-credentials-hint {
+    font-size: 0.75rem;
+    margin-bottom: 12px;
+  }
+
+  .admin-credentials-hint code {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+  }
+}
+
+/* ── Small phone (≤ 380px) – Admin specific ── */
+@media (max-width: 380px) {
+  .admin-hero {
+    padding: 12px 10px;
+  }
+
+  .admin-hero h1 {
+    font-size: 1rem;
+  }
+
+  .admin-hero p {
+    font-size: 0.75rem;
+  }
+
+  .admin-main {
+    padding: 10px;
+  }
+
+  .admin-stats {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .admin-stat {
+    padding: 10px;
+  }
+
+  .admin-stat .val {
+    font-size: 1rem;
+  }
+
+  .admin-stat .lbl {
+    font-size: 0.65rem;
+  }
+
+  .admin-tabs {
+    gap: 6px;
+  }
+
+  .admin-tab {
+    padding: 8px 10px;
+    font-size: 0.75rem;
+  }
+
+  .admin-panel h2 {
+    font-size: 1rem;
+  }
+
+  .admin-card {
+    padding: 10px;
+  }
+
+  .admin-card-header h3 {
+    font-size: 0.85rem;
+  }
+
+  .admin-meta {
+    font-size: 0.65rem;
+  }
+
+  .admin-actions .admin-btn {
+    min-width: 60px;
+    padding: 5px 6px;
+    font-size: 0.7rem;
+  }
+
+  .admin-denied {
+    margin: 16px 8px;
+    padding: 12px;
+  }
+
+  .admin-denied h2 {
+    font-size: 1rem;
+  }
+
+  .admin-denied p {
+    font-size: 0.75rem;
+  }
+}

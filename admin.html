@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="nojacss.css">
   <link rel="stylesheet" href="responsive.css">
   <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="veh.css">
   <link rel="stylesheet" href="theme.css">
 </head>
 <body>
@@ -19,13 +20,12 @@
     <nav class="nav-links">
       <a href="home.html">Home</a>
       <a href="admin.html" style="color:#6ee7a0; font-weight:600;">Admin Dashboard</a>
-      <a href="profile.html">My Profile</a>
       <a href="contact.html">Support</a>
     </nav>
     <button class="login-btn" id="login-nav-btn">Login</button>
   </header>
 
-  <div id="admin-access-denied" class="admin-denied" style="display: none;">
+  <div id="admin-access-denied" class="admin-denied" hidden>
     <div>
       <h2>🔐 Admin Access Required</h2>
       <p>This dashboard is restricted to Transport Department administrators only.</p>
@@ -51,7 +51,7 @@
     </div>
   </div>
 
-  <div id="admin-dashboard" class="admin-page" style="display: none;">
+  <div id="admin-dashboard" class="admin-page" hidden>
     <section class="admin-hero">
       <div class="admin-hero-inner">
         <div>
@@ -76,8 +76,7 @@
       <div class="admin-tabs">
         <button class="admin-tab active" data-panel="pending">Pending Bookings <span class="badge" id="tab-pending-badge" hidden>0</span></button>
         <button class="admin-tab" data-panel="all">All Bookings</button>
-        <button class="admin-tab" data-panel="fleet">Fleet Status</button>
-        <button class="admin-tab" data-panel="issues">Issues</button>
+        <button class="admin-tab" data-panel="fleet">Fleet Status</button>      <button class="admin-tab" data-panel="schedule">Schedule</button>        <button class="admin-tab" data-panel="issues">Issues</button>
       </div>
 
       <section id="panel-pending" class="admin-panel active">
@@ -93,6 +92,36 @@
       <section id="panel-fleet" class="admin-panel">
         <h2>Fleet Status</h2>
         <div id="fleet-admin-grid" class="fleet-grid-admin"></div>
+      </section>
+
+      <section id="panel-schedule" class="admin-panel">
+        <h2>Trip Schedule</h2>
+        <div class="admin-card">
+          <div class="schedule-panel-header" style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px;">
+            <div class="calendar-controls" style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+              <button type="button" class="calendar-nav-btn" id="calendar-prev" aria-label="Previous month">&lsaquo;</button>
+              <h3 id="calendar-month-title" style="margin:0; font-size:1rem;">Loading…</h3>
+              <button type="button" class="calendar-nav-btn" id="calendar-next" aria-label="Next month">&rsaquo;</button>
+            </div>
+            <button type="button" class="calendar-today-btn" id="calendar-today">Today</button>
+          </div>
+          <div class="calendar-legend">
+            <span><span class="dot today-dot"></span> Today</span>
+            <span><span class="dot trip-dot"></span> Planned trips</span>
+            <span><span class="dot booked-dot"></span> Booking requests</span>
+            <span><span class="dot" style="background:#fbbf24;"></span> Pending approval</span>
+          </div>
+          <div class="calendar-wrapper" style="overflow-x:auto; margin-top:16px;">
+            <table class="calendar" style="min-width:100%;">
+              <thead>
+                <tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>
+              </thead>
+              <tbody id="calendar-body"></tbody>
+            </table>
+          </div>
+          <p class="schedule-updated" id="schedule-updated-label">Loading schedule…</p>
+          <div class="schedule-list" id="schedule-list"></div>
+        </div>
       </section>
 
       <section id="panel-issues" class="admin-panel">
@@ -117,6 +146,7 @@
 
   <script src="JS/auth-booking.js"></script>
   <script src="JS/admin.js"></script>
+  <script src="JS/vehicles-schedule.js"></script>
   <script src="JS/responsive-nav.js"></script>
   <script>
     const loginBtn = document.getElementById('login-nav-btn');

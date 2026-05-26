@@ -17,6 +17,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .admin-hero h1 {
@@ -313,10 +315,4 @@
   font-size: 0.8rem;
   color: var(--text-light, #94a3b8);
   margin-top: 8px;
-}
-
-@media (max-width: 768px) {
-  .admin-stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }

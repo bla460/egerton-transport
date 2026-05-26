@@ -311,6 +311,9 @@ document.addEventListener("DOMContentLoaded", () => {
     renderAllBookings();
     renderFleet();
     renderIssues();
+    if (typeof window.refreshVehicleSchedule === "function") {
+      window.refreshVehicleSchedule();
+    }
   }
 
   populateIssueVehicleSelect();
