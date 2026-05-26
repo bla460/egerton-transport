@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking History — Egerton Transport</title>
+    <meta name="description" content="View all your booking history and trip details.">
+    <script src="JS/theme.js"></script>
+    <link rel="stylesheet" href="nojacss.css">
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="responsive.css">
+    <style>
+      .history-container {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 20px;
+      }
+      .history-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+      .history-header h1 {
+        color: var(--brand-green);
+        margin: 0;
+      }
+      .filter-controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .filter-controls select, .filter-controls button {
+        padding: 8px 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        background: var(--bg-card);
+        color: var(--text-main);
+        font-family: inherit;
+        cursor: pointer;
+      }
+      .filter-controls button {
+        background: var(--bg-input);
+        transition: all 0.2s;
+      }
+      .filter-controls button:hover {
+        background: var(--brand-green);
+        color: white;
+        border-color: var(--brand-green);
+      }
+      .booking-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+      .booking-item {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-left: 4px solid var(--brand-green);
+        border-radius: 8px;
+        padding: 20px;
+        transition: all 0.2s;
+      }
+      .booking-item:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        transform: translateY(-2px);
+      }
+      .booking-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+      }
+      .booking-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--brand-green);
+        margin: 0;
+      }
+      .booking-status {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+      .status-approved {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .status-rejected {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .booking-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin: 15px 0;
+      }
+      .detail-item {
+        font-size: 0.9rem;
+      }
+      .detail-label {
+        font-weight: 600;
+        color: var(--text-light);
+        font-size: 0.85rem;
+      }
+      .detail-value {
+        color: var(--text-main);
+        margin-top: 2px;
+      }
+      .booking-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid var(--border-color);
+      }
+      .booking-actions button {
+        padding: 8px 16px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        background: var(--bg-input);
+        color: var(--text-main);
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+      }
+      .booking-actions button:hover {
+        background: var(--brand-green);
+        color: white;
+        border-color: var(--brand-green);
+      }
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--text-light);
+      }
+      .empty-state h2 {
+        margin-bottom: 20px;
+      }
+      .cta-button {
+        display: inline-block;
+        background: var(--brand-green);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        text-decoration: none;
+        margin-top: 20px;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      .cta-button:hover {
+        background: #1a6e1a;
+        transform: translateY(-2px);
+      }
+    </style>
+  </head>
+<body>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="logo">
+      <img src="logo/logo.webp" alt="Logo">
+      <h2>Transport department</h2>
+    </div>
+    <nav class="nav-links">
+      <a href="home.html">Home</a>
+      <a href="vehicles.html">Vehicles</a>
+      <a href="service.html">Services</a>
+      <a href="Tracking.html">Tracking</a>
+      <a href="staff.html">Staff</a>
+      <a href="contact.html">Contact</a>
+      <a href="profile.html" style="color:var(--brand-green); font-weight:600;">👤 My Profile</a>
+    </nav>
+    <button class="login-btn" id="login-nav-btn">Login</button>
+  </header>
+
+  <!-- Auth Modals -->
+  <div id="login" class="popup">
+    <div class="popup-box">
+      <button class="close" id="close-login" style="background:none; border:none; cursor:pointer;">&times;</button>
+      <h2 style="color:var(--brand-green); margin-bottom:15px;">Login</h2>
+      <form id="login-form-inner" style="display:flex; flex-direction:column; gap:10px;">
+        <div class="input-group">
+          <label for="login-username">Username or Email</label>
+          <input type="text" id="login-username" placeholder="j.doe@gmail.com" required>
+          <span class="input-feedback-msg"></span>
+        </div>
+        <div class="input-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" required>
+          <span class="input-feedback-msg"></span>
+        </div>
+        <button type="submit" style="margin-top:10px;">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- History Content -->
+  <div class="history-container">
+    <div id="logged-out-msg" style="text-align:center; padding:40px;">
+      <h2 style="color:var(--text-light); margin-bottom:20px;">🔒 Please Log In</h2>
+      <p style="color:var(--text-light); margin-bottom:20px;">Sign in to view your booking history.</p>
+      <button class="login-btn" id="signin-cta" style="cursor:pointer;">Sign In</button>
+    </div>
+
+    <div id="history-view" style="display:none;">
+      <div class="history-header">
+        <h1>📅 Booking History</h1>
+        <div class="filter-controls">
+          <select id="status-filter">
+            <option value="">All Statuses</option>
+            <option value="Approved">✓ Approved</option>
+            <option value="Pending">⏳ Pending</option>
+            <option value="Rejected">✕ Rejected</option>
+          </select>
+          <button onclick="location.reload()">🔄 Refresh</button>
+          <a href="vehicles.html" class="login-btn" style="text-decoration:none; padding:8px 16px;">+ New Booking</a>
+        </div>
+      </div>
+
+      <div id="booking-list" class="booking-list">
+        <!-- Populated by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <a href="contact.html">
+    <div class="chat-btn">💬</div>
+  </a>
+
+  <script src="JS/auth-booking.js"></script>
+  <script src="JS/responsive-nav.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const user = window.EgertonAuth ? window.EgertonAuth.getActiveUser() : null;
+      const loggedOutMsg = document.querySelector('#logged-out-msg');
+      const historyView = document.querySelector('#history-view');
+      const signinCta = document.querySelector('#signin-cta');
+      const bookingList = document.querySelector('#booking-list');
+      const statusFilter = document.querySelector('#status-filter');
+
+      if (!user) {
+        loggedOutMsg.style.display = 'block';
+        historyView.style.display = 'none';
+        if (signinCta) {
+          signinCta.addEventListener('click', () => {
+            const loginModal = document.getElementById('login');
+            if (loginModal) loginModal.classList.add('active');
+          });
+        }
+        return;
+      }
+
+      loggedOutMsg.style.display = 'none';
+      historyView.style.display = 'block';
+
+      // Fetch user bookings
+      const allBookings = window.EgertonAuth ? window.EgertonAuth.getBookings().filter(b => b.userEmail === user.email) : [];
+      
+      function renderBookings(bookings) {
+        if (bookings.length === 0) {
+          bookingList.innerHTML = `
+            <div class="empty-state">
+              <h2>No Bookings Yet</h2>
+              <p>You haven't made any booking requests.</p>
+              <a href="vehicles.html" class="cta-button">Browse Vehicles & Book</a>
+            </div>
+          `;
+          return;
+        }
+
+        bookingList.innerHTML = bookings.sort((a, b) => new Date(b.date) - new Date(a.date)).map(b => {
+          const dateStr = new Date(b.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+          const statusClass = b.status.toLowerCase();
+          const icon = b.status === 'Approved' ? '✓' : b.status === 'Pending' ? '⏳' : '✕';
+
+          return `
+            <div class="booking-item">
+              <div class="booking-header">
+                <h3 class="booking-title">${icon} ${b.vehicleName}</h3>
+                <span class="booking-status status-${statusClass}">${b.status}</span>
+              </div>
+              <div class="booking-details">
+                <div class="detail-item">
+                  <div class="detail-label">📅 Date</div>
+                  <div class="detail-value">${dateStr}</div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">📍 Destination</div>
+                  <div class="detail-value">${b.destination}</div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">👥 Passengers</div>
+                  <div class="detail-value">${b.passengerCount}</div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">🎯 Purpose</div>
+                  <div class="detail-value">${b.tripPurpose}</div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">🎫 Ticket Ref</div>
+                  <div class="detail-value">${b.bookingId}</div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">📅 Requested</div>
+                  <div class="detail-value">${new Date(b.timestamp || new Date()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+                </div>
+              </div>
+              ${b.rejectionReason ? `<div style="padding:10px; background:rgba(239, 68, 68, 0.1); border-radius:6px; margin:12px 0; color:#991b1b; font-size:0.9rem;"><strong>Reason:</strong> ${b.rejectionReason}</div>` : ''}
+              <div class="booking-actions">
+                <button onclick="alert('Booking Reference: ${b.bookingId}\\n\\nShowing details. More features coming soon!');">📋 Details</button>
+                <a href="Tracking.html?ref=${encodeURIComponent(b.bookingId)}" style="padding:8px 16px; text-decoration:none; display:inline-block; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-input); color:var(--text-main); transition:all 0.2s;">🗺️ Track Trip</a>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Initial render
+      renderBookings(allBookings);
+
+      // Filter handler
+      statusFilter.addEventListener('change', (e) => {
+        const filtered = e.target.value ? allBookings.filter(b => b.status === e.target.value) : allBookings;
+        renderBookings(filtered);
+      });
+    });
+  </script>
+</body>
+</html>
