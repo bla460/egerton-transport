@@ -438,7 +438,29 @@
       document.getElementById(tabId).classList.add('active');
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    async function fetchAllBookings() {
+      if (window.fetch) {
+        try {
+          const response = await fetch('/api/bookings?admin=true', {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json'
+            },
+            credentials: 'include'
+          });
+          const data = await response.json();
+          if (data && data.success && Array.isArray(data.bookings)) {
+            return data.bookings;
+          }
+          console.warn('Admin bookings API returned invalid response:', data);
+        } catch (error) {
+          console.warn('Unable to load bookings from server:', error);
+        }
+      }
+      return window.EgertonAuth && window.EgertonAuth.getBookings ? window.EgertonAuth.getBookings() : [];
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
       const user = window.EgertonAuth ? window.EgertonAuth.getActiveUser() : null;
       const isAdmin = window.EgertonAuth && user && window.EgertonAuth.isAdmin(user);
 
@@ -454,7 +476,7 @@
 
       // Fetch and display all dashboard data
       const allUsers = window.EgertonAuth.getUsers() || [];
-      const allBookings = window.EgertonAuth.getBookings() || [];
+      const allBookings = await fetchAllBookings();
       const allIssues = window.EgertonAuth.getTransportIssues ? window.EgertonAuth.getTransportIssues() : [];
       const allEmails = window.EgertonAuth.getSentEmails ? window.EgertonAuth.getSentEmails() : [];
       const fleet = window.EgertonAuth.getFleet ? window.EgertonAuth.getFleet() : {};

@@ -308,6 +308,18 @@ async function findBookingsByEmail(email) {
   return inMemoryStore.bookings.filter(b => b.userEmail === email).sort((a, b) => new Date(b.date) - new Date(a.date));
 }
 
+async function getAllBookings() {
+  if (mysqlPool) {
+    const [rows] = await mysqlPool.query(
+      `SELECT booking_id AS bookingId, vehicle_id AS vehicleId, vehicle_name AS vehicleName, date, destination, passenger_count AS passengerCount, trip_purpose AS tripPurpose, user_email AS userEmail, user_name AS userName, user_id_num AS userIdNum, user_type AS userType, status
+       FROM bookings
+       ORDER BY date DESC`
+    );
+    return rows;
+  }
+  return [...inMemoryStore.bookings].sort((a, b) => new Date(b.date) - new Date(a.date));
+}
+
 async function hasDuplicateBooking(vehicleId, date, userEmail) {
   if (mysqlPool) {
     const [rows] = await mysqlPool.query(
@@ -452,7 +464,8 @@ app.post('/api/auth/login',
 );
 
 app.get('/api/bookings',
-  query('email').isEmail().normalizeEmail(),
+  query('email').optional().isEmail().normalizeEmail(),
+  query('admin').optional().isBoolean(),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -460,8 +473,17 @@ app.get('/api/bookings',
     }
 
     try {
-      const bookings = await findBookingsByEmail(req.query.email);
-      return res.json({ success: true, bookings });
+      if (req.query.email) {
+        const bookings = await findBookingsByEmail(req.query.email);
+        return res.json({ success: true, bookings });
+      }
+
+      if (req.query.admin === 'true') {
+        const bookings = await getAllBookings();
+        return res.json({ success: true, bookings });
+      }
+
+      return res.status(400).json({ success: false, message: 'Booking query must include email or admin=true.' });
     } catch (error) {
       console.error('Fetch bookings error', error);
       return res.status(500).json({ success: false, message: 'Unable to fetch bookings.' });
