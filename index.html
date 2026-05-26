@@ -6,68 +6,223 @@
         <title>Egerton University Transport</title>
         <script src="JS/theme.js"></script>
         <link rel="stylesheet" href="nojacss.css">
-        <link rel="stylesheet" href="theme.css">
         <link rel="stylesheet" href="responsive.css">
         <link rel="stylesheet" href="index.css">
         <link rel="stylesheet" href="veh.css"> 
         <link rel="stylesheet" href="home.css">
+        <link rel="stylesheet" href="theme.css">
     </head>
-    
-        <body>
-          <div id="loader-wrapper">
-    <img src="logo/logo.webp" alt="Egerton University Logo" class="pulse-logo">
-    <div id="progress-container">
-        <div id="progress-bar"></div>
-    </div>
-    <p id="progress-text">0% Loading...</p>
-</div>
-
-  <header class="navbar">
-    <div class="logo">
-      <img src="logo/logo.webp" alt="Logo">
-      <h2>Egerton University Transport department</h2>
-    </div>
-
-    <nav class="nav-links">
-      <a href="home.html">Home</a>
-      <div class="dropdown">
-        <a href="vehicles.html">Vehicles ▾</a>
-       </div>
-
-     <div class="home-hero">
-    <div class="hero-text">
-        <h2>Reliable Institutional Transport</h2>
-        <p>Providing safe, efficient, and timely transport services to the Egerton University community. Explore our fleet and book your trip today.</p>
-        <div class="hero-buttons">
-            <a href="#vehicle-list" class="btn-primary">View Fleet</a>
-            <a href="contact.html" class="btn-secondary">Contact Dept</a>
+    <body class="home-page">
+      <div id="loader-wrapper">
+        <img src="logo/logo.webp" alt="Egerton University Logo" class="pulse-logo">
+        <div id="progress-container">
+            <div id="progress-bar"></div>
         </div>
-    </div>
-</div>
+        <p id="progress-text">0% Loading...</p>
+      </div>
 
-<div class="features-grid">
-    <div class="feature-card">
-        <i class="icon">🚌</i>
-        <h4>Diverse Fleet</h4>
-        <p>From 64-passenger buses to 5-ton cargo trucks for all university needs.</p>
-    </div>
-    <div class="feature-card">
-        <i class="icon">📅</i>
-        <h4>Easy Booking</h4>
-        <p>Check schedules and request vehicles directly through our portal.</p>
-    </div>
-    <div class="feature-card">
-        <i class="icon">🛠️</i>
-        <h4>Maintained Safety</h4>
-        <p>Real-time status updates on vehicle maintenance and availability.</p>
-    </div>
-</div>
-  
- <footer class="footer">
-    <p>&copy; 2026 Egerton University Transport Department. All rights reserved.</p>
-  </footer>
+      <header class="navbar">
+        <div class="logo">
+          <img src="logo/logo.webp" alt="Logo">
+          <h2>Egerton University Transport</h2>
+        </div>
 
-  <script src="JS/home.js"></script>
-  <script src="JS/responsive-nav.js"></script>
+        <nav class="nav-links">
+          <a href="home.html">Home</a>
+          <a href="vehicles.html">Vehicles</a>
+          <a href="service.html">Services</a>
+          <a href="Tracking.html">Tracking</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+
+        <button class="login-btn" id="login-nav-btn">Login</button>
+      </header>
+
+      <section class="home-hero-pro">
+        <div class="hero-inner">
+          <span class="hero-badge">Trusted University Fleet</span>
+          <h1>Safe, reliable transport for Egerton students, staff, and official trips.</h1>
+          <p class="hero-lead">Book buses, shuttles, and cargo vehicles with one platform for approvals, tracking, and university transport management.</p>
+          <div class="hero-actions">
+            <a href="vehicles.html" class="hero-btn-primary">Browse Fleet</a>
+            <a href="Tracking.html" class="hero-btn-secondary">Track a Ride</a>
+          </div>
+        </div>
+      </section>
+
+      <div class="home-stats">
+        <div class="stat-card">
+          <span class="stat-value">85%</span>
+          <span class="stat-label">Trip approval speed</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">120+</span>
+          <span class="stat-label">Vehicles in the fleet</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">24/7</span>
+          <span class="stat-label">Campus support</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">Safe</span>
+          <span class="stat-label">Inspected and maintained daily</span>
+        </div>
+      </div>
+
+      <section class="home-section">
+        <div class="home-section-header">
+          <h2>Professional transport made easy</h2>
+          <p>Access campus transport services through a single portal for bookings, route tracking, and fleet status updates.</p>
+        </div>
+
+        <div class="features-row">
+          <article class="feature-card-pro">
+            <div class="feat-icon">🚌</div>
+            <h3>Modern fleet</h3>
+            <p>Choose from buses, vans, shuttles, and cargo vehicles tailored to university needs.</p>
+            <a href="vehicles.html">Explore vehicles</a>
+          </article>
+          <article class="feature-card-pro">
+            <div class="feat-icon">📅</div>
+            <h3>Fast bookings</h3>
+            <p>Submit trip requests quickly and receive confirmation with real-time status updates.</p>
+            <a href="vehicles.html">Start booking</a>
+          </article>
+          <article class="feature-card-pro">
+            <div class="feat-icon">🔒</div>
+            <h3>Secure access</h3>
+            <p>Work with authenticated accounts so only approved users can manage transport requests.</p>
+            <a href="home.html">Sign in now</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="home-section">
+        <div class="home-section-header">
+          <h2>Featured fleet preview</h2>
+          <p>Vehicles ready for trips across campus and official university events.</p>
+        </div>
+
+        <div class="fleet-preview-grid">
+          <article class="fleet-card-pro">
+            <div class="fleet-card-body">
+              <h3>64-seat bus</h3>
+              <p>Ideal for field trips, academic transport, and large student groups.</p>
+              <p style="font-weight:700;color:#0d7c38;">Status: Available</p>
+            </div>
+          </article>
+          <article class="fleet-card-pro">
+            <div class="fleet-card-body">
+              <h3>Campus shuttle</h3>
+              <p>Fast internal campus routes for staff and students.</p>
+              <p style="font-weight:700;color:#0d7c38;">Status: In Service</p>
+            </div>
+          </article>
+          <article class="fleet-card-pro">
+            <div class="fleet-card-body">
+              <h3>Staff van</h3>
+              <p>Perfect for departmental travel and official functions.</p>
+              <p style="font-weight:700;color:#0d7c38;">Status: Available</p>
+            </div>
+          </article>
+          <article class="fleet-card-pro">
+            <div class="fleet-card-body">
+              <h3>Cargo truck</h3>
+              <p>Reliable transport for campus equipment and support logistics.</p>
+              <p style="font-weight:700;color:#0d7c38;">Status: Available</p>
+            </div>
+          </article>
+        </div>
+
+        <div style="text-align:center; margin-top: 12px;">
+          <a href="vehicles.html" class="login-btn" style="padding: 12px 24px;">View full fleet</a>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p>&copy; 2026 Egerton University Transport Department. All rights reserved.</p>
+      </footer>
+
+      <div id="login" class="popup">
+        <div class="popup-box">
+          <button class="close" id="close-login" type="button" style="background:none;border:none;cursor:pointer;">&times;</button>
+          <h2 style="color:var(--brand-green);margin-bottom:15px;">Login</h2>
+          <form id="login-form-inner" style="display:flex;flex-direction:column;gap:10px;">
+            <div class="input-group">
+              <label for="login-username">Username or Email</label>
+              <input type="text" id="login-username" placeholder="j.doe@gmail.com" required>
+              <span class="input-feedback-msg"></span>
+            </div>
+            <div class="input-group">
+              <label for="login-password">Password</label>
+              <input type="password" id="login-password" placeholder="••••••••" required>
+              <span class="input-feedback-msg"></span>
+            </div>
+            <button type="submit" style="margin-top:10px;">Login</button>
+          </form>
+          <p style="margin-top:10px;font-size:12px;"><button id="to-forgot" type="button" style="background:none;border:none;color:var(--brand-green);cursor:pointer;text-decoration:underline;font-family:inherit;">Forgot Password?</button></p>
+          <p style="font-size:12px;margin-top:10px;">Don't have an account? <button id="to-signup" type="button" style="background:none;border:none;color:var(--brand-green);cursor:pointer;text-decoration:underline;font-family:inherit;font-weight:600;">Create one</button></p>
+        </div>
+      </div>
+
+      <div id="signup" class="popup">
+        <div class="popup-box" style="width:340px;">
+          <button class="close" id="close-signup" type="button" style="background:none;border:none;cursor:pointer;">&times;</button>
+          <h2 style="color:var(--brand-green);margin-bottom:15px;">Create Account</h2>
+          <form id="signup-form-inner" style="display:flex;flex-direction:column;gap:10px;">
+            <div class="input-group">
+              <label for="signup-username">Username</label>
+              <input type="text" id="signup-username" placeholder="alex_egerton" required>
+              <span class="input-feedback-msg"></span>
+            </div>
+            <div class="input-group">
+              <label for="signup-email">University Email</label>
+              <input type="email" id="signup-email" placeholder="example@gmail.com" required>
+              <span class="input-feedback-msg"></span>
+            </div>
+            <div class="input-group">
+              <label for="signup-usertype">Account Type</label>
+              <select id="signup-usertype" required>
+                <option value="student">Student</option>
+                <option value="staff">Staff / Faculty</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label for="signup-idnum">Reg No / Staff ID</label>
+              <input type="text" id="signup-idnum" placeholder="S23/04812/21" required>
+              <span class="input-feedback-msg"></span>
+            </div>
+            <div class="input-group">
+              <label for="signup-password">Password</label>
+              <input type="password" id="signup-password" placeholder="••••••••" required>
+              <span class="input-feedback-msg"></span>
+            </div>
+            <button type="submit" style="margin-top:10px;">Create Account</button>
+          </form>
+          <p style="font-size:12px;margin-top:10px;">Already have an account? <button id="to-login" type="button" style="background:none;border:none;color:var(--brand-green);cursor:pointer;text-decoration:underline;font-family:inherit;font-weight:600;">Login here</button></p>
+        </div>
+      </div>
+
+      <div id="forgot" class="popup">
+        <div class="popup-box">
+          <button class="close" id="close-forgot" type="button" style="background:none;border:none;cursor:pointer;">&times;</button>
+          <h2 style="color:var(--brand-green);margin-bottom:15px;">Forgot Password</h2>
+          <p style="font-size:12px;margin-bottom:15px;color:var(--text-light);">Enter your university email to reset your password.</p>
+          <form id="forgot-form-inner" style="display:flex;flex-direction:column;gap:10px;">
+            <div class="input-group">
+              <label for="forgot-email">University Email</label>
+              <input type="email" id="forgot-email" placeholder="example@gmail.com" required>
+              <span class="input-feedback-msg"></span>
+            </div>
+            <button type="submit" style="margin-top:10px;">Reset Password</button>
+          </form>
+          <p style="margin-top:10px;font-size:12px;"><button id="forgot-to-login" type="button" style="background:none;border:none;color:var(--brand-green);cursor:pointer;text-decoration:underline;font-family:inherit;">Back to Login</button></p>
+        </div>
+      </div>
+
+      <script src="JS/auth-booking.js"></script>
+      <script src="JS/home.js"></script>
+      <script src="JS/responsive-nav.js"></script>
+      <script src="JS/lazy-load.js"></script>
     </body>
 </html>

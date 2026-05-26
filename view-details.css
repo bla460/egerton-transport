@@ -161,6 +161,11 @@
     animation: fadeIn 0.4s ease;
 }
 
+.email-notification {
+    margin-top: 14px;
+    animation: fadeIn 0.4s ease;
+}
+
 [data-theme='dark'] .confirmation-msg {
     background: #1a3d22;
     color: #a3d9a5;

@@ -47,11 +47,14 @@ app.use(helmet({
       scriptSrc: ["'self'", "'unsafe-inline'", 'https:'],
       styleSrc: ["'self'", "'unsafe-inline'", 'https:'],
       imgSrc: ["'self'", 'data:', 'https:'],
-      connectSrc: ["'self'"],
-      fontSrc: ["'self'", 'https:', 'data:'],
-      objectSrc: ["'none'"]
+      connectSrc: ["'self'", 'https:'],
+      fontSrc: ["'self'", 'https:'],
+      objectSrc: ["'none'"],
+      baseUri: ["'self'"],
+      upgradeInsecureRequests: []
     }
-  }
+  },
+  crossOriginResourcePolicy: { policy: 'same-origin' }
 }));
 
 // Apply CORS specifically for API routes with explicit allowed headers
@@ -65,6 +68,17 @@ app.use('/api', cors({
 }));
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: false, limit: '10kb' }));
+
+if (NODE_ENV === 'production') {
+  app.enable('trust proxy');
+  app.use((req, res, next) => {
+    const forwardedProto = req.headers['x-forwarded-proto'];
+    if (req.secure || forwardedProto === 'https') {
+      return next();
+    }
+    return res.redirect(301, `https://${req.headers.host}${req.url}`);
+  });
+}
 
 const limiter = rateLimit({
   windowMs: 60 * 1000,

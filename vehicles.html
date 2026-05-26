@@ -6,10 +6,10 @@
   <title>Egerton Transport Department</title>
   <script src="JS/theme.js"></script>
   <link rel="stylesheet" href="nojacss.css">
-  <link rel="stylesheet" href="theme.css">
   <link rel="stylesheet" href="responsive.css">
   <link rel="stylesheet" href="veh.css">
   <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="theme.css">
 </head>
 <body>
 
@@ -24,7 +24,7 @@
   <header class="navbar">
     <div class="logo">
       <img src="logo/logo.webp" alt="Logo">
-      <h2>Egerton University <span>Transport</span></h2>
+      <h2>Egerton University Transport</h2>
     </div>
 
     <nav class="nav-links">
@@ -48,7 +48,7 @@
         <form id="login-form-inner" style="display:flex; flex-direction:column; gap:10px;">
           <div class="input-group">
             <label for="login-username">Username or Email</label>
-            <input type="text" id="login-username" placeholder="j.doe@egerton.ac.ke" required>
+            <input type="text" id="login-username" placeholder="j.doe@gmail.com" required>
             <span class="input-feedback-msg"></span>
           </div>
           
@@ -68,7 +68,6 @@
         </p>
       </div>
     </div>
-
     <!-- Unified Signup Modal -->
     <div id="signup" class="popup">
       <div class="popup-box" style="width: 340px;">
@@ -84,7 +83,7 @@
 
           <div class="input-group">
             <label for="signup-email">University Email</label>
-            <input type="email" id="signup-email" placeholder="example@egerton.ac.ke" required>
+            <input type="email" id="signup-email" placeholder="example@gmail.com" required>
             <span class="input-feedback-msg"></span>
           </div>
 
@@ -127,7 +126,7 @@
         <form id="forgot-form-inner" style="display:flex; flex-direction:column; gap:10px;">
           <div class="input-group">
             <label for="forgot-email">University Email</label>
-            <input type="email" id="forgot-email" placeholder="example@egerton.ac.ke" required>
+            <input type="email" id="forgot-email" placeholder="example@gmail.com" required>
             <span class="input-feedback-msg"></span>
           </div>
           <button type="submit" style="margin-top:10px;">Reset Password</button>
@@ -195,7 +194,6 @@
           <img src="Images/Cool Bus.jpg" class="card-img-top" alt="Truck 1">
           <div class="card-content"></div>
           <h4>Passengers Bus</h4>
-          <p>Capacity: 64 Passengers</p>
           <p>Status: <span class="status-available">Available</span></p>
           <a href="view-details.html?id=passengers-bus-1"><button class="details-btn">View Details</button></a>
         </div>
@@ -204,8 +202,8 @@
           <div class="vehicle-card">
             <img src="Images/bus 4.jpg" alt="Bus 1">
           <h4>Students Bus</h4>
-          <p>Capacity: 50 Passengers</p>
-          <p>Status: In Service</p>
+          <p>Status: <span class="status-available">Available</span></p>
+          
           <a href="view-details.html?id=students-bus-1"><button class="details-btn">View Details</button></a>
         </div>
 
@@ -213,7 +211,7 @@
           <img src="Images/hiace 2.jpg" alt="Van 1">
           <h4>Staff Van</h4>
           <p>Capacity: 15 Seats</p>
-          <p>Status: Under Maintenance</p>
+          <p>Status: <span class="status-under-maintenance">Under Maintenance</span></p>
           <a href="view-details.html?id=staff-van-1"><button class="details-btn">View Details</button></a>
         </div>
 
@@ -221,7 +219,7 @@
           <img src="Images/Truck.webp" alt="Truck 2">
           <h4>Delivery Truck</h4>
           <p>Capacity: 8 Tons</p>
-          <p>Status: Available</p>
+          <p>Status: <span class="status-available">Available</span></p>
           <a href="view-details.html?id=delivery-truck-1"><button class="details-btn">View Details</button></a>
       </div>
 
@@ -229,55 +227,49 @@
           <img src="Images/Scania Bus.jpg" alt="Bus 2">
           <h4>Students Bus 2</h4>
           <p>Capacity: 40 Passengers</p>
-          <p>Status: In Service</p>
+          <p>Status: <span class="status-in-service">In Service</span></p>
           <a href="view-details.html?id=students-bus-2"><button class="details-btn">View Details</button></a>
       </div>
 
       <div class="vehicle-card">
           <img src="Images/passengers vehicle.jpg" alt="Van 2">
           <h4>Faculty Van</h4>
-          <p>Capacity: 12 Seats</p>
-          <p>Status: Available</p>
+          <p>Status: <span class="status-available">Available</span></p>
           <a href="view-details.html?id=faculty-van-1"><button class="details-btn">View Details</button></a>
       </div>
       
       <div class="vehicle-card">
           <img src="Images/Truck 3.jpg" alt="Truck 3">
           <h4>Cargo Truck</h4>
-          <p>Capacity: 5 Tons</p>
-          <p>Status: Under Maintenance</p>
+           <p>Status: <span class="status-under-maintenance">Under Maintenance</span></p>
           <a href="view-details.html?id=cargo-truck-1"><button class="details-btn">View Details</button></a>
           </div>
       
       <div class="vehicle-card">
           <img src="Images/egerton bus 2.jpeg" alt="Bus 3">
           <h4>Students Bus 3</h4>
-          <p>Capacity: 60 Passengers</p>
-          <p>Status: Available</p>
+          <p>Status: <span class="status-available">Available</span></p>
           <a href="view-details.html?id=students-bus-3"><button class="details-btn">View Details</button></a>
       </div> 
       
       <div class="vehicle-card">
           <img src="Images/Minibus.jpg" alt="Van 3">
           <h4>Maintenance Van</h4>
-          <p>Capacity: 10 Seats</p>
-          <p>Status: In Service</p>
+          <p>Status: <span class="status-in-service">In Service</span></p>
           <a href="view-details.html?id=maintenance-van-1"><button class="details-btn">View Details</button></a>
      </div>
 
      <div class="vehicle-card">
           <img src="Images/Taxi.jpg" alt="Taxi">
           <h4>Taxi</h4>
-          <p>Capacity: 4 Passangers</p>
-          <p>Status: Available</p>
+          <p>Status: <span class="status-available">Available</span></p>
           <a href="view-details.html?id=taxi-1"><button class="details-btn">View Details</button></a>
       </div>
 
       <div class="vehicle-card">
           <img src="Images/White Van 1.jpg" alt="Shuttle">
           <h4>Campus Shuttle</h4>
-          <p>Capacity: 20 Passengers</p>
-          <p>Status: In Service</p>
+           <p>Status: <span class="status-in-service">In Service</span></p>
           <a href="view-details.html?id=campus-shuttle-1"><button class="details-btn">View Details</button></a>
       </div>
 
@@ -285,7 +277,7 @@
           <img src="Images/Bike.jpg" alt="Bike">
           <h4>Bike</h4>
           <p>For Hire</p>
-          <p>Status: Available</p>
+          <p>Status: <span class="status-available">Available</span></p>
           <a href="view-details.html?id=bike-1"><button class="details-btn">View Details</button></a>
       </div>
         </section>
@@ -300,7 +292,11 @@
 
   <script src="JS/auth-booking.js"></script>
   <script src="JS/vehicles-schedule.js"></script>
+  <script src="JS/vehicles-filters.js"></script>
   <script src="JS/home.js"></script>
   <script src="JS/responsive-nav.js"></script>
+  <script src="JS/lazy-load.js"></script>
 </body>
 </html>
+
+

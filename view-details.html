@@ -7,11 +7,11 @@
     <meta name="description" content="View vehicle details and submit a booking request with the Egerton University Transport Department.">
     <script src="JS/theme.js"></script>
     <link rel="stylesheet" href="nojacss.css">
-    <link rel="stylesheet" href="theme.css">
-    <link rel="stylesheet" href="responsive.css">
+  <link rel="stylesheet" href="responsive.css">
     <link rel="stylesheet" href="veh.css">
     <link rel="stylesheet" href="home.css">
     <link rel="stylesheet" href="view-details.css">
+  <link rel="stylesheet" href="theme.css">
 </head>
 <body>
 
@@ -41,7 +41,7 @@
       <form id="login-form-inner" style="display:flex; flex-direction:column; gap:10px;">
         <div class="input-group">
           <label for="login-username">Username or Email</label>
-          <input type="text" id="login-username" placeholder="j.doe@egerton.ac.ke" required>
+          <input type="text" id="login-username" placeholder="j.doe@gmail.com" required>
           <span class="input-feedback-msg"></span>
         </div>
         
@@ -77,7 +77,7 @@
 
         <div class="input-group">
           <label for="signup-email">University Email</label>
-          <input type="email" id="signup-email" placeholder="example@egerton.ac.ke" required>
+          <input type="email" id="signup-email" placeholder="example@gmail.com" required>
           <span class="input-feedback-msg"></span>
         </div>
 
@@ -120,7 +120,7 @@
       <form id="forgot-form-inner" style="display:flex; flex-direction:column; gap:10px;">
         <div class="input-group">
           <label for="forgot-email">University Email</label>
-          <input type="email" id="forgot-email" placeholder="example@egerton.ac.ke" required>
+          <input type="email" id="forgot-email" placeholder="example@gmail.com" required>
           <span class="input-feedback-msg"></span>
         </div>
         <button type="submit" style="margin-top:10px;">Reset Password</button>
@@ -162,7 +162,10 @@
       <div class="booking-lock-overlay">
         <h4 style="color:var(--brand-green); margin-bottom: 8px;">🔒 Authentication Required</h4>
         <p>You must be signed in with your Egerton University account to request this vehicle.</p>
-        <button class="booking-lock-btn login-btn" style="margin-top: 10px;">Sign In to Book</button>
+        <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top: 10px;">
+          <button id="booking-login-btn" class="booking-lock-btn login-btn" style="flex:1 1 140px;">Sign In to Book</button>
+          <button id="booking-signup-btn" class="booking-lock-btn signup-btn" style="flex:1 1 140px; background:var(--brand-green); color:#fff;">Create Account</button>
+        </div>
       </div>
 
       <h3 style="margin-bottom:15px; color:var(--brand-green);">Request Booking</h3>
@@ -209,6 +212,7 @@
 
       <!-- Dynamic Confirmation panel (optional callback wrapper) -->
       <div id="confirmation-msg" class="confirmation-msg" style="display:none;"></div>
+      <div id="email-notification" class="email-notification" style="display:none;"></div>
 
       <p class="note" style="margin-top:10px; font-size:11px; color:var(--text-light); text-align:center;">
         A printed copy of this receipt is required upon boarding.
@@ -236,6 +240,10 @@
         <div class="receipt-row">
           <span class="label">ID / Reg Number:</span>
           <span class="value" id="receipt-id">-</span>
+        </div>
+        <div class="receipt-row">
+          <span class="label">Email:</span>
+          <span class="value" id="receipt-email">-</span>
         </div>
         <div class="receipt-row">
           <span class="label">Travel Date:</span>
@@ -283,3 +291,5 @@
   <script src="JS/responsive-nav.js"></script>
 </body>
 </html>
+
+

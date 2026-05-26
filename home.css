@@ -1,7 +1,7 @@
 /* Professional home page */
 
 .home-page {
-  background: var(--page-bg, #f4faf4);
+  background: var(--page-bg, #0f172a);
 }
 
 .home-hero-pro {
@@ -54,7 +54,7 @@
 }
 
 .hero-btn-primary {
-  background: #fff;
+  background: var(--surface-elevated, #f8fafc);
   color: #0d7c38;
   padding: 14px 28px;
   border-radius: 8px;
@@ -97,12 +97,12 @@
 }
 
 .stat-card {
-  background: #fff;
+  background: var(--surface-bg, #111827);
   border-radius: 12px;
   padding: 24px 20px;
   text-align: center;
-  box-shadow: 0 8px 30px rgba(13, 124, 56, 0.1);
-  border: 1px solid #e8f5e9;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-color, #1f2937);
 }
 
 .stat-card .stat-value {
@@ -148,13 +148,13 @@
 }
 
 .feature-card-pro {
-  background: #fff;
+  background: var(--surface-bg, #111827);
   border-radius: 14px;
   padding: 28px 24px;
   text-align: center;
-  border: 1px solid #e8f5e9;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid var(--border-color, #1f2937);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
 
 .feature-card-pro:hover {
@@ -168,13 +168,13 @@
 }
 
 .feature-card-pro h3 {
-  color: #0d7c38;
+  color: #6ee7a0;
   font-size: 1.1rem;
   margin-bottom: 10px;
 }
 
 .feature-card-pro p {
-  color: #64748b;
+  color: #cbd5e1;
   font-size: 0.9rem;
   line-height: 1.55;
   margin-bottom: 14px;
@@ -195,10 +195,10 @@
 }
 
 .fleet-card-pro {
-  background: #fff;
+  background: var(--surface-bg, #111827);
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid #e8f5e9;
+  border: 1px solid var(--border-color, #1f2937);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
   transition: transform 0.2s, box-shadow 0.2s;
 }

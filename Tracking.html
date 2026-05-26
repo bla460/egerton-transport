@@ -7,8 +7,7 @@
     <meta name="description" content="View real-time Egerton University transit route progress, simulated telemetry, and vehicle status dispatches.">
     <script src="JS/theme.js"></script>
     <link rel="stylesheet" href="nojacss.css">
-    <link rel="stylesheet" href="theme.css">
-    <link rel="stylesheet" href="responsive.css">
+  <link rel="stylesheet" href="responsive.css">
     <link rel="stylesheet" href="home.css">
     <style>
         .tracking-header {
@@ -76,22 +75,23 @@
             flex-wrap: wrap;
         }
         .filter-chip {
-            background: white;
-            border: 1px solid var(--border-color);
-            color: var(--text-dark);
-            padding: 8px 16px;
-            border-radius: 20px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.16);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 22px;
             cursor: pointer;
             font-family: inherit;
             font-size: 13px;
-            font-weight: 500;
-            transition: all 0.3s ease;
+            font-weight: 700;
+            transition: all 0.25s ease;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.25);
         }
         .filter-chip:hover, .filter-chip.active {
             background: var(--brand-green);
             color: white;
             border-color: var(--brand-green);
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 12px 24px rgba(13,124,56,0.18);
         }
 
         /* Fleet Cards */
@@ -121,6 +121,7 @@
 
         /* Status Colors */
         .tracking-card.on-route { border-left: 5px solid var(--success-color); }
+        .tracking-card.available { border-left: 5px solid var(--brand-green); }
         .tracking-card.stopped { border-left: 5px solid var(--error-color); }
         .tracking-card.maintenance { border-left: 5px solid var(--warning-color); }
 
@@ -147,6 +148,7 @@
             text-transform: uppercase;
         }
         .status-pill.on-route { background: #dcfce7; color: #15803d; }
+        .status-pill.available { background: #dbeafe; color: #1d4ed8; }
         .status-pill.stopped { background: #fee2e2; color: #b91c1c; }
         .status-pill.maintenance { background: #fef9c3; color: #a16207; }
 
@@ -233,22 +235,23 @@
             margin-top: 8px;
         }
         .dispatch-btn {
-            background: white;
-            border: 1px solid var(--border-color);
-            color: var(--text-dark);
-            padding: 6px 12px;
-            border-radius: 6px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.18);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 8px;
             font-family: inherit;
-            font-size: 11px;
-            font-weight: 600;
+            font-size: 12px;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.35);
         }
         .dispatch-btn:hover {
             border-color: var(--brand-green);
-            color: var(--brand-green);
-            background: var(--brand-green-light);
+            color: white;
+            background: rgba(16,185,129,0.95);
         }
         .dispatch-btn.danger:hover {
             border-color: var(--error-color);
@@ -280,6 +283,7 @@
             box-shadow: var(--shadow-md);
         }
     </style>
+  <link rel="stylesheet" href="theme.css">
 </head>
 <body>
 
@@ -309,7 +313,7 @@
       <form id="login-form-inner" style="display:flex; flex-direction:column; gap:10px;">
         <div class="input-group">
           <label for="login-username">Username or Email</label>
-          <input type="text" id="login-username" placeholder="j.doe@egerton.ac.ke" required>
+          <input type="text" id="login-username" placeholder="j.doe@gmail.com" required>
           <span class="input-feedback-msg"></span>
         </div>
         
@@ -345,7 +349,7 @@
 
         <div class="input-group">
           <label for="signup-email">University Email</label>
-          <input type="email" id="signup-email" placeholder="example@egerton.ac.ke" required>
+          <input type="email" id="signup-email" placeholder="example@gmail.com" required>
           <span class="input-feedback-msg"></span>
         </div>
 
@@ -388,7 +392,7 @@
       <form id="forgot-form-inner" style="display:flex; flex-direction:column; gap:10px;">
         <div class="input-group">
           <label for="forgot-email">University Email</label>
-          <input type="email" id="forgot-email" placeholder="example@egerton.ac.ke" required>
+          <input type="email" id="forgot-email" placeholder="example@gmail.com" required>
           <span class="input-feedback-msg"></span>
         </div>
         <button type="submit" style="margin-top:10px;">Reset Password</button>
@@ -412,204 +416,18 @@
       <!-- Filters -->
       <div class="tracking-filters">
           <button class="filter-chip active" onclick="filterFleet('all', this)">All Vehicles</button>
+          <button class="filter-chip" onclick="filterFleet('available', this)">Available</button>
           <button class="filter-chip" onclick="filterFleet('on-route', this)">On Route</button>
           <button class="filter-chip" onclick="filterFleet('stopped', this)">Stopped</button>
           <button class="filter-chip" onclick="filterFleet('maintenance', this)">Maintenance</button>
       </div>
 
-      <!-- Fleet Tracking Cards -->
-      <div class="fleet-grid" id="tracking-fleet-grid">
-          <!-- Card 1: Passengers Bus -->
-          <div class="tracking-card on-route" data-status="on-route" id="passengers-bus-1">
-              <div class="card-header">
-                  <div class="vehicle-title">
-                      <h3>Passengers Bus</h3>
-                      <span>ID: EGT-BUS-10A | KBQ 402P</span>
-                  </div>
-                  <span class="status-pill on-route">On Route</span>
-              </div>
-              <div class="route-info">
-                  <strong>Route:</strong> Njoro Campus ➔ Town Campus Excursion
-              </div>
-              
-              <!-- Progress Tracker -->
-              <div class="route-tracker">
-                  <div class="tracker-node start"></div>
-                  <div class="tracker-progress" id="progress-bar-passengers-bus-1"></div>
-                  <div class="tracker-bus-icon" id="bus-icon-passengers-bus-1">🚌</div>
-                  <div class="tracker-node end"></div>
-              </div>
-
-              <!-- Telemetry -->
-              <div class="telemetry-grid">
-                  <div class="telemetry-item">
-                      <span>Speed</span>
-                      <strong id="speed-passengers-bus-1">62 km/h</strong>
-                  </div>
-                  <div class="telemetry-item">
-                      <span>Fuel</span>
-                      <strong id="fuel-passengers-bus-1">78%</strong>
-                  </div>
-                  <div class="telemetry-item">
-                      <span>GPS Coordinates</span>
-                      <strong id="gps-passengers-bus-1">0.3721° S, 35.9324° E</strong>
-                  </div>
-              </div>
-              
-              <div class="timestamp-log">
-                  Last Updated: <span class="time-log" id="time-passengers-bus-1">10:15:32 AM</span>
-              </div>
-
-              <!-- Staff Commands -->
-              <div class="dispatch-actions" id="actions-passengers-bus-1">
-                  <button class="dispatch-btn danger" onclick="dispatchVehicle('passengers-bus-1', 'stopped')">🛑 Stop Route</button>
-                  <button class="dispatch-btn" onclick="dispatchVehicle('passengers-bus-1', 'maintenance')">🔧 Send to Shop</button>
-              </div>
-          </div>
-
-          <!-- Card 2: Campus Shuttle -->
-          <div class="tracking-card on-route" data-status="on-route" id="campus-shuttle-1">
-              <div class="card-header">
-                  <div class="vehicle-title">
-                      <h3>Campus Shuttle</h3>
-                      <span>ID: EGT-SHT-24B | KCD 794M</span>
-                  </div>
-                  <span class="status-pill on-route">On Route</span>
-              </div>
-              <div class="route-info">
-                  <strong>Route:</strong> Hostels Circular ➔ Lectures Lane
-              </div>
-              
-              <!-- Progress Tracker -->
-              <div class="route-tracker">
-                  <div class="tracker-node start"></div>
-                  <div class="tracker-progress" id="progress-bar-campus-shuttle-1"></div>
-                  <div class="tracker-bus-icon" id="bus-icon-campus-shuttle-1">🚐</div>
-                  <div class="tracker-node end"></div>
-              </div>
-
-              <!-- Telemetry -->
-              <div class="telemetry-grid">
-                  <div class="telemetry-item">
-                      <span>Speed</span>
-                      <strong id="speed-campus-shuttle-1">28 km/h</strong>
-                  </div>
-                  <div class="telemetry-item">
-                      <span>Fuel</span>
-                      <strong id="fuel-campus-shuttle-1">45%</strong>
-                  </div>
-                  <div class="telemetry-item">
-                      <span>GPS Coordinates</span>
-                      <strong id="gps-campus-shuttle-1">0.3644° S, 35.9281° E</strong>
-                  </div>
-              </div>
-              
-              <div class="timestamp-log">
-                  Last Updated: <span class="time-log" id="time-campus-shuttle-1">10:14:02 AM</span>
-              </div>
-
-              <!-- Staff Commands -->
-              <div class="dispatch-actions" id="actions-campus-shuttle-1">
-                  <button class="dispatch-btn danger" onclick="dispatchVehicle('campus-shuttle-1', 'stopped')">🛑 Stop Route</button>
-                  <button class="dispatch-btn" onclick="dispatchVehicle('campus-shuttle-1', 'maintenance')">🔧 Send to Shop</button>
-              </div>
-          </div>
-
-          <!-- Card 3: Staff Van -->
-          <div class="tracking-card maintenance" data-status="maintenance" id="staff-van-1">
-              <div class="card-header">
-                  <div class="vehicle-title">
-                      <h3>Staff Van</h3>
-                      <span>ID: EGT-VAN-02F | KDF 884L</span>
-                  </div>
-                  <span class="status-pill maintenance">Maintenance</span>
-              </div>
-              <div class="route-info">
-                  <strong>Route:</strong> Out of Service (Garage Diagnostic)
-              </div>
-              
-              <!-- Progress Tracker -->
-              <div class="route-tracker">
-                  <div class="tracker-node start"></div>
-                  <div class="tracker-progress" style="width: 0%;" id="progress-bar-staff-van-1"></div>
-                  <div class="tracker-bus-icon" style="left: 0%;" id="bus-icon-staff-van-1">🚐</div>
-                  <div class="tracker-node end"></div>
-              </div>
-
-              <!-- Telemetry -->
-              <div class="telemetry-grid">
-                  <div class="telemetry-item">
-                      <span>Speed</span>
-                      <strong id="speed-staff-van-1">0 km/h</strong>
-                  </div>
-                  <div class="telemetry-item">
-                      <span>Fuel</span>
-                      <strong id="fuel-staff-van-1">95%</strong>
-                  </div>
-                  <div class="telemetry-item">
-                      <span>GPS Coordinates</span>
-                      <strong id="gps-staff-van-1">0.3702° S, 35.9304° E</strong>
-                  </div>
-              </div>
-              
-              <div class="timestamp-log">
-                  Last Updated: <span class="time-log" id="time-staff-van-1">08:30:15 AM</span>
-              </div>
-
-              <!-- Staff Commands -->
-              <div class="dispatch-actions" id="actions-staff-van-1">
-                  <button class="dispatch-btn" style="grid-column: 1/-1;" onclick="dispatchVehicle('staff-van-1', 'on-route')">🟢 Dispatch to Active Route</button>
-              </div>
-          </div>
-
-          <!-- Card 4: Delivery Truck -->
-          <div class="tracking-card stopped" data-status="stopped" id="delivery-truck-1">
-              <div class="card-header">
-                  <div class="vehicle-title">
-                      <h3>Delivery Truck</h3>
-                      <span>ID: EGT-TRK-08D | KFH 991K</span>
-                  </div>
-                  <span class="status-pill stopped">Stopped</span>
-              </div>
-              <div class="route-info">
-                  <strong>Route:</strong> Town Campus Depot (Loading Cargo)
-              </div>
-              
-              <!-- Progress Tracker -->
-              <div class="route-tracker">
-                  <div class="tracker-node start"></div>
-                  <div class="tracker-progress" style="width: 0%;" id="progress-bar-delivery-truck-1"></div>
-                  <div class="tracker-bus-icon" style="left: 0%;" id="bus-icon-delivery-truck-1">🚚</div>
-                  <div class="tracker-node end"></div>
-              </div>
-
-              <!-- Telemetry -->
-              <div class="telemetry-grid">
-                  <div class="telemetry-item">
-                      <span>Speed</span>
-                      <strong id="speed-delivery-truck-1">0 km/h</strong>
-                  </div>
-                  <div class="telemetry-item">
-                      <span>Fuel</span>
-                      <strong id="fuel-delivery-truck-1">62%</strong>
-                  </div>
-                  <div class="telemetry-item">
-                      <span>GPS Coordinates</span>
-                      <strong id="gps-delivery-truck-1">0.3842° S, 35.9412° E</strong>
-                  </div>
-              </div>
-              
-              <div class="timestamp-log">
-                  Last Updated: <span class="time-log" id="time-delivery-truck-1">10:02:11 AM</span>
-              </div>
-
-              <!-- Staff Commands -->
-              <div class="dispatch-actions" id="actions-delivery-truck-1">
-                  <button class="dispatch-btn" onclick="dispatchVehicle('delivery-truck-1', 'on-route')">🟢 Dispatch Route</button>
-                  <button class="dispatch-btn" onclick="dispatchVehicle('delivery-truck-1', 'maintenance')">🔧 Send to Shop</button>
-              </div>
-          </div>
+      <div class="tracking-summary">
+          <p id="tracking-count-label">Tracking <strong id="tracking-count">0</strong> vehicles live through the fleet telemetry panel.</p>
       </div>
+
+      <!-- Fleet Tracking Cards -->
+      <div class="fleet-grid" id="tracking-fleet-grid"></div>
 
       <!-- Live GPS Telemetry Refresh Trigger -->
       <div class="telemetry-refresh-section">
@@ -625,171 +443,309 @@
   <script src="JS/auth-booking.js"></script>
   <script>
       // 1. Telemetry Variables
-      const progressRates = {
-          "passengers-bus-1": 68,
-          "campus-shuttle-1": 32,
-          "staff-van-1": 0,
-          "delivery-truck-1": 0
+      const trackingRoutes = {
+          "passengers-bus-1": {
+              route: "Njoro Campus ➔ Town Campus Excursion",
+              badge: "EGT-BUS-10A | KBQ 402P",
+              icon: "🚌"
+          },
+          "students-bus-1": {
+              route: "Library Shuttle ➔ Lecture Halls Loop",
+              badge: "EGT-BUS-11B | KAB 221L",
+              icon: "🚌"
+          },
+          "students-bus-2": {
+              route: "Sports Complex ➔ Main Quad",
+              badge: "EGT-BUS-12C | KDF 330N",
+              icon: "🚌"
+          },
+          "students-bus-3": {
+              route: "Research Park ➔ Conference Centre",
+              badge: "EGT-BUS-13D | KGF 554P",
+              icon: "🚌"
+          },
+          "campus-shuttle-1": {
+              route: "Hostels Circular ➔ Lecture Lane",
+              badge: "EGT-SHT-24B | KCD 794M",
+              icon: "🚐"
+          },
+          "faculty-van-1": {
+              route: "Faculty Housing ➔ Senate House",
+              badge: "EGT-VAN-09G | KDT 714K",
+              icon: "🚐"
+          },
+          "staff-van-1": {
+              route: "Out of Service (Garage Diagnostic)",
+              badge: "EGT-VAN-02F | KDF 884L",
+              icon: "🚐"
+          },
+          "maintenance-van-1": {
+              route: "Facilities Loop ➔ Service Yard",
+              badge: "EGT-VAN-15H | KBB 317M",
+              icon: "🚐"
+          },
+          "delivery-truck-1": {
+              route: "Town Campus Depot (Loading Cargo)",
+              badge: "EGT-TRK-08D | KFH 991K",
+              icon: "🚚"
+          },
+          "cargo-truck-1": {
+              route: "Supply Yard ➔ Science Park",
+              badge: "EGT-TRK-09E | KGH 212V",
+              icon: "🚚"
+          },
+          "taxi-1": {
+              route: "Rapid Response — Campus Shuttle",
+              badge: "EGT-TAX-01Z | KCT 569L",
+              icon: "🚖"
+          },
+          "bike-1": {
+              route: "Campus Errands — Bike Share",
+              badge: "EGT-BKE-03X | KDV 118Q",
+              icon: "🚲"
+          }
       };
 
-      // 2. Animate Route Tracker Bars on Page Load
-      document.addEventListener("DOMContentLoaded", () => {
-          animateTracks();
-          syncUserRoles();
-      });
+      const statusMap = {
+          "Available": "available",
+          "In Service": "on-route",
+          "Under Maintenance": "maintenance"
+      };
 
-      function animateTracks() {
-          Object.keys(progressRates).forEach(id => {
-              const card = document.getElementById(id);
-              if (card && card.getAttribute("data-status") === "on-route") {
-                  const bar = document.getElementById(`progress-bar-${id}`);
-                  const bus = document.getElementById(`bus-icon-${id}`);
-                  const rate = progressRates[id];
-                  if (bar) bar.style.width = rate + "%";
-                  if (bus) bus.style.left = rate + "%";
-              }
-          });
-      }
+      const statusLabel = {
+          "on-route": "On Route",
+          "available": "Available",
+          "stopped": "Stopped",
+          "maintenance": "Maintenance"
+      };
 
-      // 3. Dynamic User Role Dispatch Authorization
-      function syncUserRoles() {
-          const auth = window.EgertonAuth;
-          if (!auth) return;
+      const progressRates = {};
 
-          const activeUser = auth.getActiveUser();
-          const roleIndicator = document.getElementById("role-indicator");
-          const dispatchControlPanels = document.querySelectorAll(".dispatch-actions");
-
-          if (activeUser) {
-              if (activeUser.userType === "staff") {
-                  // Staff Access Granted
-                  roleIndicator.className = "role-badge staff";
-                  roleIndicator.textContent = `👮 Staff Dispatch Control Console: ${activeUser.username} (${activeUser.idNum})`;
-                  
-                  // Unlock all command action buttons
-                  dispatchControlPanels.forEach(panel => {
-                      panel.style.display = "grid";
-                  });
-              } else {
-                  // Student Access (Read-Only)
-                  roleIndicator.className = "role-badge student";
-                  roleIndicator.textContent = `🎓 Student Transit Feed: ${activeUser.username}`;
-                  dispatchControlPanels.forEach(panel => panel.style.display = "none");
-              }
-          } else {
-              // Visitor Access
-              roleIndicator.className = "role-badge visitor";
-              roleIndicator.textContent = "👤 Visitor Feed (Read-Only - Log in to access feeds)";
-              dispatchControlPanels.forEach(panel => panel.style.display = "none");
+      function getFleetState() {
+          if (window.EgertonAuth && typeof window.EgertonAuth.getFleet === "function") {
+              return window.EgertonAuth.getFleet();
+          }
+          try {
+              return JSON.parse(localStorage.getItem("egerton_transport_fleet")) || {};
+          } catch (e) {
+              return {};
           }
       }
 
-      // 4. Dispatch Commands (Staff Role Triggered)
-      function dispatchVehicle(vehicleId, newStatus) {
+      function randomInt(min, max) {
+          return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function buildTelemetryValues(status) {
+          if (status === "on-route") {
+              return {
+                  speed: `${randomInt(32, 68)} km/h`,
+                  fuel: `${randomInt(40, 82)}%`,
+                  coords: `${(0.35 + Math.random() * 0.05).toFixed(4)}° S, ${(35.91 + Math.random() * 0.05).toFixed(4)}° E`
+              };
+          }
+          return {
+              speed: "0 km/h",
+              fuel: `${randomInt(50, 92)}%`,
+              coords: `${(0.35 + Math.random() * 0.05).toFixed(4)}° S, ${(35.91 + Math.random() * 0.05).toFixed(4)}° E`
+          };
+      }
+
+      function buildFleetCard(vehicleId, vehicle) {
+          const routeInfo = trackingRoutes[vehicleId] || {
+              route: "Campus Shuttle Service",
+              badge: `EGT-${vehicleId.toUpperCase()}`,
+              icon: "🚍"
+          };
+          const trackingStatus = statusMap[vehicle.status] || "stopped";
+          progressRates[vehicleId] = progressRates[vehicleId] ?? (trackingStatus === "on-route" ? randomInt(25, 72) : 0);
+          const progress = progressRates[vehicleId];
+          const telemetry = buildTelemetryValues(trackingStatus);
+
+          return `
+              <div class="tracking-card ${trackingStatus}" data-status="${trackingStatus}" id="${vehicleId}">
+                  <div class="card-header">
+                      <div class="vehicle-title">
+                          <h3>${vehicle.name}</h3>
+                          <span>${routeInfo.badge}</span>
+                      </div>
+                      <span class="status-pill ${trackingStatus}">${statusLabel[trackingStatus]}</span>
+                  </div>
+                  <div class="route-info">
+                      <strong>Route:</strong> ${routeInfo.route}
+                  </div>
+                  <div class="route-tracker">
+                      <div class="tracker-node start"></div>
+                      <div class="tracker-progress" id="progress-bar-${vehicleId}" style="width: ${progress}%"></div>
+                      <div class="tracker-bus-icon" id="bus-icon-${vehicleId}" style="left: ${progress}%">${routeInfo.icon}</div>
+                      <div class="tracker-node end"></div>
+                  </div>
+                  <div class="telemetry-grid">
+                      <div class="telemetry-item">
+                          <span>Speed</span>
+                          <strong id="speed-${vehicleId}">${telemetry.speed}</strong>
+                      </div>
+                      <div class="telemetry-item">
+                          <span>Fuel</span>
+                          <strong id="fuel-${vehicleId}">${telemetry.fuel}</strong>
+                      </div>
+                      <div class="telemetry-item">
+                          <span>GPS Coordinates</span>
+                          <strong id="gps-${vehicleId}">${telemetry.coords}</strong>
+                      </div>
+                  </div>
+                  <div class="timestamp-log">
+                      Last Updated: <span class="time-log" id="time-${vehicleId}">${new Date().toLocaleTimeString()}</span>
+                  </div>
+                  <div class="dispatch-actions" id="actions-${vehicleId}"></div>
+              </div>
+          `;
+      }
+
+      function updateActionPanel(vehicleId, trackingStatus) {
+          const panel = document.getElementById(`actions-${vehicleId}`);
+          if (!panel) return;
+
+          if (trackingStatus === "on-route") {
+              panel.style.gridTemplateColumns = "repeat(2, 1fr)";
+              panel.innerHTML = `
+                  <button class="dispatch-btn danger" onclick="dispatchVehicle('${vehicleId}', 'stopped')">🛑 Stop Route</button>
+                  <button class="dispatch-btn" onclick="dispatchVehicle('${vehicleId}', 'maintenance')">🔧 Send to Shop</button>
+              `;
+          } else if (trackingStatus === "available" || trackingStatus === "stopped") {
+              panel.style.gridTemplateColumns = "repeat(2, 1fr)";
+              panel.innerHTML = `
+                  <button class="dispatch-btn" onclick="dispatchVehicle('${vehicleId}', 'on-route')">🟢 Dispatch Route</button>
+                  <button class="dispatch-btn" onclick="dispatchVehicle('${vehicleId}', 'maintenance')">🔧 Send to Shop</button>
+              `;
+          } else {
+              panel.style.gridTemplateColumns = "1fr";
+              panel.innerHTML = `
+                  <button class="dispatch-btn" onclick="dispatchVehicle('${vehicleId}', 'on-route')">🟢 Dispatch to Active Route</button>
+              `;
+          }
+      }
+
+      function renderTrackingCards() {
+          const fleet = getFleetState();
+          const grid = document.getElementById("tracking-fleet-grid");
+          if (!grid) return;
+
+          const cards = Object.entries(fleet)
+              .sort(([idA, a], [idB, b]) => {
+                  return (statusMap[b.status] || "").localeCompare(statusMap[a.status] || "");
+              })
+              .map(([vehicleId, vehicle]) => buildFleetCard(vehicleId, vehicle));
+
+          grid.innerHTML = cards.join("");
+          document.getElementById("tracking-count").textContent = cards.length;
+          Object.entries(fleet).forEach(([vehicleId, vehicle]) => {
+              updateActionPanel(vehicleId, statusMap[vehicle.status] || "stopped");
+          });
+          syncUserRoles();
+      }
+
+      function updateCardStatus(vehicleId, newStatus) {
           const card = document.getElementById(vehicleId);
           if (!card) return;
-
-          const pill = card.querySelector(".status-pill");
-          const speedEl = document.getElementById(`speed-${vehicleId}`);
-          const bar = document.getElementById(`progress-bar-${vehicleId}`);
-          const bus = document.getElementById(`bus-icon-${vehicleId}`);
-          const actionsPanel = document.getElementById(`actions-${vehicleId}`);
-
-          // Visual transition
           card.classList.remove("on-route", "stopped", "maintenance");
           card.classList.add(newStatus);
           card.setAttribute("data-status", newStatus);
-
-          pill.textContent = newStatus.replace("-", " ");
-          pill.className = `status-pill ${newStatus}`;
-
-          const now = new Date();
-          document.getElementById(`time-${vehicleId}`).textContent = now.toLocaleTimeString();
-
-          if (newStatus === "on-route") {
-              progressRates[vehicleId] = Math.floor(10 + Math.random() * 80); // random start
-              if (speedEl) speedEl.textContent = Math.floor(25 + Math.random() * 50) + " km/h";
-              
-              if (bar) bar.style.width = progressRates[vehicleId] + "%";
-              if (bus) bus.style.left = progressRates[vehicleId] + "%";
-              
-              // Rewrite dispatch buttons
-              if (actionsPanel) {
-                  actionsPanel.innerHTML = `
-                      <button class="dispatch-btn danger" onclick="dispatchVehicle('${vehicleId}', 'stopped')">🛑 Stop Route</button>
-                      <button class="dispatch-btn" onclick="dispatchVehicle('${vehicleId}', 'maintenance')">🔧 Send to Shop</button>
-                  `;
-                  actionsPanel.style.gridTemplateColumns = "repeat(2, 1fr)";
-              }
-          } else if (newStatus === "stopped") {
-              progressRates[vehicleId] = 0;
-              if (speedEl) speedEl.textContent = "0 km/h";
-              if (bar) bar.style.width = "0%";
-              if (bus) bus.style.left = "0%";
-
-              if (actionsPanel) {
-                  actionsPanel.innerHTML = `
-                      <button class="dispatch-btn" onclick="dispatchVehicle('${vehicleId}', 'on-route')">🟢 Dispatch Route</button>
-                      <button class="dispatch-btn" onclick="dispatchVehicle('${vehicleId}', 'maintenance')">🔧 Send to Shop</button>
-                  `;
-                  actionsPanel.style.gridTemplateColumns = "repeat(2, 1fr)";
-              }
-          } else if (newStatus === "maintenance") {
-              progressRates[vehicleId] = 0;
-              if (speedEl) speedEl.textContent = "0 km/h";
-              if (bar) bar.style.width = "0%";
-              if (bus) bus.style.left = "0%";
-
-              if (actionsPanel) {
-                  actionsPanel.innerHTML = `
-                      <button class="dispatch-btn" style="grid-column: 1/-1;" onclick="dispatchVehicle('${vehicleId}', 'on-route')">🟢 Dispatch to Active Route</button>
-                  `;
-                  actionsPanel.style.gridTemplateColumns = "1fr";
-              }
+          const pill = card.querySelector(".status-pill");
+          if (pill) {
+              pill.className = `status-pill ${newStatus}`;
+              pill.textContent = statusLabel[newStatus];
           }
-
-          // Trigger dynamic storage inspector updates
-          window.EgertonAuth.updateDevConsoleDB();
-
-          // Smooth alert
-          alert(`🛰️ Telemetry Command Dispatched!\n\nVehicle ID: ${vehicleId.toUpperCase()}\nAssigned State: ${newStatus.toUpperCase()}`);
       }
 
-      // 5. Telemetry Refresh (GPS Refreshes)
+      function syncUserRoles() {
+          const auth = window.EgertonAuth;
+          const activeUser = auth?.getActiveUser();
+          const roleIndicator = document.getElementById("role-indicator");
+          const dispatchPanels = document.querySelectorAll(".dispatch-actions");
+
+          if (!roleIndicator) return;
+
+          if (activeUser) {
+              if (activeUser.userType === "staff" || auth?.isAdmin(activeUser)) {
+                  roleIndicator.className = "role-badge staff";
+                  roleIndicator.textContent = auth?.isAdmin(activeUser)
+                      ? `🛡️ Admin Fleet Control: ${activeUser.username}`
+                      : `👮 Staff Dispatch Control Console: ${activeUser.username} (${activeUser.idNum})`;
+                  dispatchPanels.forEach(panel => panel.style.display = "grid");
+              } else {
+                  roleIndicator.className = "role-badge student";
+                  roleIndicator.textContent = `🎓 Student Transit Feed: ${activeUser.username}`;
+                  dispatchPanels.forEach(panel => panel.style.display = "none");
+              }
+          } else {
+              roleIndicator.className = "role-badge visitor";
+              roleIndicator.textContent = "👤 Visitor Feed (Read-Only - Log in to access feeds)";
+              dispatchPanels.forEach(panel => panel.style.display = "none");
+          }
+      }
+
+      function dispatchVehicle(vehicleId, newStatus) {
+          const auth = window.EgertonAuth;
+          const activeUser = auth?.getActiveUser();
+          const card = document.getElementById(vehicleId);
+          if (!card) return;
+
+          const now = new Date();
+          const currentStatus = card.getAttribute("data-status");
+          if (currentStatus === newStatus) return;
+
+          if (newStatus === "on-route") {
+              progressRates[vehicleId] = randomInt(20, 75);
+              document.getElementById(`speed-${vehicleId}`).textContent = `${randomInt(30, 62)} km/h`;
+          } else {
+              progressRates[vehicleId] = 0;
+              document.getElementById(`speed-${vehicleId}`).textContent = "0 km/h";
+          }
+
+          document.getElementById(`fuel-${vehicleId}`).textContent = `${randomInt(35, 92)}%`;
+          document.getElementById(`gps-${vehicleId}`).textContent = `${(0.35 + Math.random() * 0.05).toFixed(4)}° S, ${(35.91 + Math.random() * 0.05).toFixed(4)}° E`;
+          document.getElementById(`time-${vehicleId}`).textContent = now.toLocaleTimeString();
+          document.getElementById(`progress-bar-${vehicleId}`).style.width = `${progressRates[vehicleId]}%`;
+          document.getElementById(`bus-icon-${vehicleId}`).style.left = `${progressRates[vehicleId]}%`;
+
+          updateCardStatus(vehicleId, newStatus);
+          updateActionPanel(vehicleId, newStatus);
+          syncUserRoles();
+
+          const backendStatusMap = {
+              "on-route": "In Service",
+              "stopped": "Available",
+              "maintenance": "Under Maintenance"
+          };
+          if (auth && activeUser && (activeUser.userType === "staff" || auth.isAdmin(activeUser))) {
+              auth.setVehicleStatus(vehicleId, backendStatusMap[newStatus]);
+          }
+      }
+
       function triggerTelemetryRefreshes() {
           const btn = document.getElementById("telemetry-refresh-btn");
+          if (!btn) return;
           btn.textContent = "⌛ Fetching Live GPS Coordinates...";
           btn.disabled = true;
 
           setTimeout(() => {
-              Object.keys(progressRates).forEach(id => {
-                  const card = document.getElementById(id);
-                  if (card && card.getAttribute("data-status") === "on-route") {
-                      // Modulate speed, fuel, and telemetry
-                      const speedEl = document.getElementById(`speed-${id}`);
-                      const fuelEl = document.getElementById(`fuel-${id}`);
-                      const gpsEl = document.getElementById(`gps-${id}`);
-                      const timeEl = document.getElementById(`time-${id}`);
-
-                      if (speedEl) speedEl.textContent = Math.floor(30 + Math.random() * 50) + " km/h";
-                      if (fuelEl) fuelEl.textContent = Math.max(10, Math.floor(parseInt(fuelEl.textContent) - (1 + Math.random() * 4))) + "%";
-                      
-                      // Slightly nudge coordinates
-                      const lat = (0.35 + Math.random() * 0.05).toFixed(4);
-                      const lng = (35.91 + Math.random() * 0.05).toFixed(4);
-                      if (gpsEl) gpsEl.textContent = `${lat}° S, ${lng}° E`;
-
-                      const nextProgress = Math.min(100, progressRates[id] + Math.floor(5 + Math.random() * 15));
-                      progressRates[id] = nextProgress === 100 ? 5 : nextProgress; // reset circular track
-                      
-                      const bar = document.getElementById(`progress-bar-${id}`);
-                      const bus = document.getElementById(`bus-icon-${id}`);
-                      if (bar) bar.style.width = progressRates[id] + "%";
-                      if (bus) bus.style.left = progressRates[id] + "%";
-
-                      const now = new Date();
-                      if (timeEl) timeEl.textContent = now.toLocaleTimeString();
-                  }
+              document.querySelectorAll(".tracking-card").forEach(card => {
+                  const id = card.id;
+                  if (card.getAttribute("data-status") !== "on-route") return;
+                  const speedEl = document.getElementById(`speed-${id}`);
+                  const fuelEl = document.getElementById(`fuel-${id}`);
+                  const gpsEl = document.getElementById(`gps-${id}`);
+                  const timeEl = document.getElementById(`time-${id}`);
+                  progressRates[id] = Math.min(100, (progressRates[id] || 0) + randomInt(5, 15));
+                  if (speedEl) speedEl.textContent = `${randomInt(35, 72)} km/h`;
+                  if (fuelEl) fuelEl.textContent = `${Math.max(5, parseInt(fuelEl.textContent) - randomInt(1, 4))}%`;
+                  if (gpsEl) gpsEl.textContent = `${(0.35 + Math.random() * 0.05).toFixed(4)}° S, ${(35.91 + Math.random() * 0.05).toFixed(4)}° E`;
+                  if (timeEl) timeEl.textContent = new Date().toLocaleTimeString();
+                  const bar = document.getElementById(`progress-bar-${id}`);
+                  const bus = document.getElementById(`bus-icon-${id}`);
+                  if (bar) bar.style.width = `${progressRates[id]}%`;
+                  if (bus) bus.style.left = `${progressRates[id]}%`;
               });
 
               btn.textContent = "⚡ Telemetry Synchronized!";
@@ -797,30 +753,33 @@
                   btn.textContent = "⚡ Synchronize GPS Telemetry";
                   btn.disabled = false;
               }, 1000);
-          }, 1200);
+          }, 900);
       }
 
-      // 6. Grid Filtering
       function filterFleet(status, element) {
-          // Toggle Active class
-          document.querySelectorAll(".filter-chip").forEach(chip => {
-              chip.classList.remove("active");
-          });
-          element.classList.add("active");
-
-          // Filter grid cards with quick transitions
+          document.querySelectorAll(".filter-chip").forEach(chip => chip.classList.remove("active"));
+          if (element) element.classList.add("active");
           document.querySelectorAll(".tracking-card").forEach(card => {
               const cStatus = card.getAttribute("data-status");
-              if (status === "all" || cStatus === status) {
-                  card.style.display = "flex";
+              const visible = status === "all" || cStatus === status;
+              card.style.display = visible ? "flex" : "none";
+              if (visible) {
                   card.style.opacity = "0";
-                  setTimeout(() => { card.style.opacity = "1"; }, 50);
-              } else {
-                  card.style.display = "none";
+                  setTimeout(() => card.style.opacity = "1", 50);
               }
           });
       }
+
+      document.addEventListener("DOMContentLoaded", () => {
+          renderTrackingCards();
+      });
+
+      window.addEventListener("egerton-fleet-updated", () => {
+          renderTrackingCards();
+      });
   </script>
   <script src="JS/responsive-nav.js"></script>
 </body>
 </html>
+
+

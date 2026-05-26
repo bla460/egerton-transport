@@ -164,13 +164,24 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!activeUser) {
         bookingPanel.classList.add("logged-out");
         
-        // Connect the Sign In to Book CTA to open our navbar login popup
-        const lockBtn = bookingPanel.querySelector(".booking-lock-btn");
-        if (lockBtn) {
-            lockBtn.addEventListener("click", () => {
-                const loginModal = document.getElementById("login");
+        // Connect the booking CTA buttons to the page auth popups
+        const loginLockBtn = bookingPanel.querySelector("#booking-login-btn");
+        const signupLockBtn = bookingPanel.querySelector("#booking-signup-btn");
+        const loginModal = document.getElementById("login");
+        const signupModal = document.getElementById("signup");
+
+        if (loginLockBtn) {
+            loginLockBtn.addEventListener("click", () => {
                 if (loginModal) {
                     loginModal.classList.add("active");
+                }
+            });
+        }
+
+        if (signupLockBtn) {
+            signupLockBtn.addEventListener("click", () => {
+                if (signupModal) {
+                    signupModal.classList.add("active");
                 }
             });
         }
@@ -248,7 +259,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 3. Form Submission Coordinator
     const bookingForm = document.getElementById("booking-form");
     if (bookingForm) {
-        bookingForm.addEventListener("submit", (e) => {
+        bookingForm.addEventListener("submit", async (e) => {
             e.preventDefault();
 
             // Run final check validations
@@ -298,7 +309,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (isFormValid) {
                 const vehicleName = vehicle ? vehicle.name : "Unknown Vehicle";
-                const result = auth.requestBooking(
+                const result = await auth.requestBooking(
                     id,
                     vehicleName,
                     dateField.value,
@@ -327,6 +338,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     document.getElementById("receipt-vehicle").textContent = booking.vehicleName;
                     document.getElementById("receipt-user").textContent = activeUser.username;
                     document.getElementById("receipt-id").textContent = booking.userIdNum;
+                    document.getElementById("receipt-email").textContent = activeUser.email || "Not available";
                     document.getElementById("receipt-date").textContent = new Date(booking.date).toLocaleDateString("en-US", {
                         weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'
                     });
@@ -338,6 +350,35 @@ document.addEventListener("DOMContentLoaded", () => {
                     const receiptModal = document.getElementById("booking-receipt-modal");
                     if (receiptModal) {
                         receiptModal.classList.add("active");
+                    }
+
+                    const confirmationMsg = document.getElementById("confirmation-msg");
+                    const emailNotificationEl = document.getElementById("email-notification");
+                    const emailAddress = activeUser.email || "your email address";
+                    if (confirmationMsg) {
+                        const formattedDate = new Date(booking.date).toLocaleDateString("en-US", {
+                            weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'
+                        });
+                        confirmationMsg.style.display = "block";
+                        confirmationMsg.innerHTML = isPending
+                            ? `<strong>Booking request submitted!</strong> Your request for <strong>${booking.vehicleName}</strong> on <strong>${formattedDate}</strong> to <strong>${booking.destination}</strong> is now pending approval. Reference: <strong>${booking.bookingId}</strong>. A confirmation email has been sent to <strong>${emailAddress}</strong>.`
+                            : `<strong>Booking confirmed!</strong> Your trip for <strong>${booking.vehicleName}</strong> on <strong>${formattedDate}</strong> to <strong>${booking.destination}</strong> has been confirmed. Ticket: <strong>${booking.bookingId}</strong>. A confirmation email has been sent to <strong>${emailAddress}</strong>.`;
+                    }
+                    if (emailNotificationEl) {
+                        const emailData = result.emailNotification;
+                        if (emailData) {
+                            emailNotificationEl.style.display = "block";
+                            emailNotificationEl.innerHTML = `
+                                <div style="padding:14px 16px; border:1px solid rgba(40,167,69,0.25); border-radius:10px; background:rgba(234,247,236,0.85); color:#114f22;">
+                                    <div style="font-size:0.95rem; margin-bottom:8px;"><strong>Email notification sent to:</strong> ${emailData.to}</div>
+                                    <div style="font-size:0.88rem; margin-bottom:8px;"><strong>Subject:</strong> ${emailData.subject}</div>
+                                    <pre style="white-space:pre-wrap; margin:0; padding:12px; border-radius:8px; background:#f5fcf7; color:#184f2b; font-size:0.88rem; overflow:auto;">${emailData.body}</pre>
+                                </div>
+                            `;
+                        } else {
+                            emailNotificationEl.style.display = "none";
+                            emailNotificationEl.innerHTML = "";
+                        }
                     }
 
                     if (isPending) {
@@ -367,6 +408,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     // Update developer live storage inspector
                     auth.updateDevConsoleDB();
                 } else {
+                    const confirmationMsg = document.getElementById("confirmation-msg");
+                    const emailNotificationEl = document.getElementById("email-notification");
+                    if (confirmationMsg) {
+                        confirmationMsg.style.display = "none";
+                        confirmationMsg.innerHTML = "";
+                    }
+                    if (emailNotificationEl) {
+                        emailNotificationEl.style.display = "none";
+                        emailNotificationEl.innerHTML = "";
+                    }
                     alert("❌ " + result.message);
                 }
             }

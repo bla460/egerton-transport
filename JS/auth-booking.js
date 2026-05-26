@@ -14,6 +14,49 @@ const EGERTON_BOOKINGS_KEY = "egerton_transport_bookings";
 const EGERTON_SESSION_KEY = "egerton_transport_active_user";
 const EGERTON_FLEET_KEY = "egerton_transport_fleet";
 const EGERTON_ISSUES_KEY = "egerton_transport_issues";
+const EGERTON_EMAILS_KEY = "egerton_transport_email_log";
+
+const API_BASE_URL = typeof window !== "undefined" && window.location.protocol.startsWith("http")
+    ? window.location.origin
+    : null;
+const useBackendAPI = Boolean(API_BASE_URL);
+
+async function apiRequest(endpoint, method = "GET", body = null) {
+    if (!useBackendAPI) return null;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+            method,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            mode: 'cors',
+            credentials: 'include',
+            body: body ? JSON.stringify(body) : undefined
+        });
+
+        const data = await response.json().catch(() => null);
+        if (!response.ok) {
+            console.warn('API non-OK response', response.status, response.statusText, data);
+            return data || { success: false, message: response.statusText, status: response.status };
+        }
+        return data;
+    } catch (error) {
+        console.warn("Remote API request failed:", error);
+        return null;
+    }
+}
+
+async function fetchBookingsForUser(email) {
+    if (useBackendAPI && email) {
+        const result = await apiRequest(`/api/bookings?email=${encodeURIComponent(email)}`, "GET");
+        if (result && result.success) {
+            return result.bookings || [];
+        }
+    }
+    return getBookings().filter(b => b.userEmail === email);
+}
 
 const DEFAULT_FLEET = {
     "passengers-bus-1": { name: "Passengers Bus", status: "Available" },
@@ -34,21 +77,21 @@ function seedDefaultUsers() {
     const users = [
         {
             username: "transport_admin",
-            email: "transport.admin@egerton.ac.ke",
+            email: "transport.admin@gmail.com",
             password: "Admin123",
             userType: "admin",
             idNum: "ADM-TRANS-01"
         },
         {
             username: "staff_demo",
-            email: "j.doe@egerton.ac.ke",
+            email: "j.doe@gmail.com",
             password: "Password123",
             userType: "staff",
             idNum: "EST-9023"
         },
         {
             username: "student_demo",
-            email: "alex.k@student.egerton.ac.ke",
+            email: "alex.k@gmail.com",
             password: "Student123",
             userType: "student",
             idNum: "S23/04812/21"
@@ -64,7 +107,7 @@ if (!localStorage.getItem(EGERTON_USERS_KEY)) {
     if (!users.some((u) => u.userType === "admin")) {
         users.unshift({
             username: "transport_admin",
-            email: "transport.admin@egerton.ac.ke",
+            email: "transport.admin@gmail.com",
             password: "Admin123",
             userType: "admin",
             idNum: "ADM-TRANS-01"
@@ -129,6 +172,43 @@ function getUsers() {
 }
 function getBookings() {
     return JSON.parse(localStorage.getItem(EGERTON_BOOKINGS_KEY)) || [];
+}
+function getSentEmails() {
+    return JSON.parse(localStorage.getItem(EGERTON_EMAILS_KEY)) || [];
+}
+function saveSentEmail(emailRecord) {
+    const emails = getSentEmails();
+    emails.unshift(emailRecord);
+    localStorage.setItem(EGERTON_EMAILS_KEY, JSON.stringify(emails.slice(0, 20)));
+    return emailRecord;
+}
+function createBookingConfirmationEmail(user, booking) {
+    const formattedDate = new Date(booking.date).toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+    });
+    const subject = booking.status === "Pending"
+        ? `Egerton Transport Booking Request Received — ${booking.bookingId}`
+        : `Egerton Transport Booking Confirmed — ${booking.bookingId}`;
+    const body = `Dear ${user.username},\n\n` +
+        `Your transport ${booking.status.toLowerCase()} for ${booking.vehicleName} on ${formattedDate} to ${booking.destination} has been recorded.\n\n` +
+        `Booking Reference: ${booking.bookingId}\n` +
+        `Passengers: ${booking.passengerCount}\n` +
+        `Trip Purpose: ${booking.tripPurpose}\n\n` +
+        `Please keep this email for your records. If your booking is pending approval, you will receive an update when the transport office confirms your request.\n\n` +
+        `Regards,\nEgerton University Transport Department`;
+
+    return saveSentEmail({
+        emailId: `EMAIL-${Date.now()}-${Math.floor(Math.random() * 9000 + 1000)}`,
+        to: user.email,
+        subject,
+        body,
+        sentAt: new Date().toISOString(),
+        type: "booking_confirmation",
+        bookingId: booking.bookingId
+    });
 }
 function getActiveUser() {
     return JSON.parse(localStorage.getItem(EGERTON_SESSION_KEY)) || null;
@@ -266,8 +346,8 @@ const ValidationRules = {
     // Requires a letter, number, and min 5 characters
     username: /^[a-zA-Z0-9_]{5,20}$/,
     
-    // Authenticate with Egerton university email domain patterns
-    email: /^[a-zA-Z0-9._%+-]+@(student\.)?egerton\.ac\.ke$/,
+    // Authenticate with Gmail address pattern
+    email: /^[a-zA-Z0-9._%+-]+@gmail\.com$/,
     
     // Minimum 6 characters, at least one uppercase letter and one number
     password: /^(?=.*[0-9])(?=.*[a-zA-Z]).{6,20}$/,
@@ -326,19 +406,36 @@ function validateField(inputElement, regexPattern, errorMsg) {
 /**
  * Handle Signup/Registration
  */
-function handleSignup(usernameVal, emailVal, passwordVal, userTypeVal, idVal) {
+async function handleSignup(usernameVal, emailVal, passwordVal, userTypeVal, idVal) {
     const users = getUsers();
     
-    // Check if username or email already exists
+    if (userTypeVal === "admin") {
+        return { success: false, message: "Admin accounts cannot be created via public signup." };
+    }
+
     if (users.some(u => u.username === usernameVal)) {
         return { success: false, message: "Username is already taken." };
     }
     if (users.some(u => u.email === emailVal)) {
         return { success: false, message: "Email is already registered." };
     }
-    
-    if (userTypeVal === "admin") {
-        return { success: false, message: "Admin accounts cannot be created via public signup." };
+
+    if (useBackendAPI) {
+        const apiResult = await apiRequest('/api/auth/signup', 'POST', {
+            username: usernameVal,
+            email: emailVal,
+            password: passwordVal,
+            userType: userTypeVal,
+            idNum: idVal
+        });
+
+        if (apiResult) {
+            if (apiResult.success) {
+                localStorage.setItem(EGERTON_SESSION_KEY, JSON.stringify(apiResult.user));
+                return apiResult;
+            }
+            return apiResult;
+        }
     }
 
     const newUser = {
@@ -351,20 +448,31 @@ function handleSignup(usernameVal, emailVal, passwordVal, userTypeVal, idVal) {
     
     users.push(newUser);
     localStorage.setItem(EGERTON_USERS_KEY, JSON.stringify(users));
-    
-    // Auto-login after successful signup
     localStorage.setItem(EGERTON_SESSION_KEY, JSON.stringify(newUser));
     
-    return { success: true, message: "Account created successfully!" };
+    return { success: true, message: "Account created successfully!", user: newUser };
 }
 
 /**
  * Handle Login
  */
-function handleLogin(emailOrUserVal, passwordVal) {
+async function handleLogin(emailOrUserVal, passwordVal) {
+    if (useBackendAPI) {
+        const apiResult = await apiRequest('/api/auth/login', 'POST', {
+            emailOrUsername: emailOrUserVal,
+            password: passwordVal
+        });
+
+        if (apiResult) {
+            if (apiResult.success) {
+                localStorage.setItem(EGERTON_SESSION_KEY, JSON.stringify(apiResult.user));
+                return apiResult;
+            }
+            return apiResult;
+        }
+    }
+
     const users = getUsers();
-    
-    // Search user database
     const user = users.find(u => 
         (u.email === emailOrUserVal || u.username === emailOrUserVal) && 
         u.password === passwordVal
@@ -375,7 +483,7 @@ function handleLogin(emailOrUserVal, passwordVal) {
     }
     
     localStorage.setItem(EGERTON_SESSION_KEY, JSON.stringify(user));
-    return { success: true, message: "Login successful!" };
+    return { success: true, message: "Login successful!", user };
 }
 
 /**
@@ -393,24 +501,21 @@ function handleLogout() {
 /**
  * Validates and submits a new booking request
  */
-function requestBooking(vehicleId, vehicleName, dateVal, destinationVal, passengerCountVal, tripPurposeVal) {
+async function requestBooking(vehicleId, vehicleName, dateVal, destinationVal, passengerCountVal, tripPurposeVal) {
     const user = getActiveUser();
     if (!user) {
         return { success: false, message: "You must be logged in to book." };
     }
     
-    // Date validation - must be in the future
     const selectedDate = new Date(dateVal);
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // remove time for pure day check
+    today.setHours(0, 0, 0, 0);
     
     if (selectedDate < today) {
         return { success: false, message: "Trip date cannot be in the past." };
     }
-    
+
     const bookings = getBookings();
-    
-    // Check if this vehicle is already booked by the active user on this date (avoid duplicate)
     const duplicate = bookings.some(b => 
         b.vehicleId === vehicleId && 
         b.date === dateVal && 
@@ -420,17 +525,16 @@ function requestBooking(vehicleId, vehicleName, dateVal, destinationVal, passeng
     if (duplicate) {
         return { success: false, message: "You have already requested this vehicle for this date." };
     }
-    
-    // Generate secure randomized ticket reference
-    const randNum = Math.floor(10000 + Math.random() * 90000); // 5 digits
+
+    const randNum = Math.floor(10000 + Math.random() * 90000);
     const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     const randChar = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
     const ticketRef = `EGT-${randNum}-${randChar}`;
     
     const newBooking = {
         bookingId: ticketRef,
-        vehicleId: vehicleId,
-        vehicleName: vehicleName,
+        vehicleId,
+        vehicleName,
         date: dateVal,
         destination: destinationVal,
         passengerCount: passengerCountVal || 1,
@@ -442,30 +546,56 @@ function requestBooking(vehicleId, vehicleName, dateVal, destinationVal, passeng
         status: "Pending",
         timestamp: new Date().toISOString()
     };
-    
+
+    if (useBackendAPI) {
+        const apiResult = await apiRequest('/api/bookings', 'POST', newBooking);
+        if (apiResult) {
+            if (apiResult.success) {
+                notifyBookingChange();
+                return {
+                    success: true,
+                    booking: apiResult.booking,
+                    pendingApproval: true,
+                    emailNotification: apiResult.emailNotification || createBookingConfirmationEmail(user, apiResult.booking)
+                };
+            }
+            return apiResult;
+        }
+    }
+
     bookings.push(newBooking);
     localStorage.setItem(EGERTON_BOOKINGS_KEY, JSON.stringify(bookings));
+    const emailNotification = createBookingConfirmationEmail(user, newBooking);
     notifyBookingChange();
     
-    return { success: true, booking: newBooking, pendingApproval: true };
+    return { success: true, booking: newBooking, pendingApproval: true, emailNotification };
 }
 
 /**
  * Cancels an active booking
  */
-function cancelBooking(bookingId) {
-    let bookings = getBookings();
+async function cancelBooking(bookingId) {
     const activeUser = getActiveUser();
-    
     if (!activeUser) return false;
-    
-    // Filter out the selected booking
+
+    if (useBackendAPI) {
+        const result = await apiRequest('/api/bookings/cancel', 'POST', {
+            bookingId,
+            userEmail: activeUser.email
+        });
+        if (result && result.success) {
+            notifyBookingChange();
+            updateDevConsoleDB();
+            return true;
+        }
+    }
+
+    let bookings = getBookings();
     const originalLength = bookings.length;
     bookings = bookings.filter(b => !(b.bookingId === bookingId && b.userEmail === activeUser.email));
     
     localStorage.setItem(EGERTON_BOOKINGS_KEY, JSON.stringify(bookings));
     notifyBookingChange();
-    
     updateDevConsoleDB();
     return bookings.length < originalLength;
 }
@@ -542,7 +672,7 @@ function initNavbarState() {
 /**
  * Builds the Bookings Dashboard inside home.html (only visible to active session)
  */
-function renderBookingsDashboard() {
+async function renderBookingsDashboard() {
     const user = getActiveUser();
     let anchor = document.querySelector(".main-container");
     if (!anchor) {
@@ -551,7 +681,6 @@ function renderBookingsDashboard() {
     
     if (!user || !anchor) return;
     
-    // Check if bookings container already exists, if not create it
     let dashboard = document.getElementById("my-bookings-section");
     if (!dashboard) {
         dashboard = document.createElement("div");
@@ -561,7 +690,7 @@ function renderBookingsDashboard() {
         anchor.after(dashboard);
     }
     
-    const bookings = getBookings().filter(b => b.userEmail === user.email);
+    const bookings = await fetchBookingsForUser(user.email);
     
     let bookingsHTML = "";
     if (bookings.length === 0) {
@@ -666,12 +795,12 @@ const DEMO_BOOKING = {
     status: "Approved"
 };
 
-function renderBookingSuccessSection() {
+async function renderBookingSuccessSection() {
     const section = document.getElementById("booking-success-section");
     if (!section) return;
 
     const user = getActiveUser();
-    const allBookings = getBookings();
+    const allBookings = user ? await fetchBookingsForUser(user.email) : [];
     let booking = null;
     let isLive = false;
 
@@ -740,17 +869,16 @@ function renderBookingSuccessSection() {
 }
 
 // Global hook for booking cancellation
-window.triggerBookingCancellation = function(bookingId) {
+window.triggerBookingCancellation = async function(bookingId) {
     if (confirm("Are you sure you want to cancel this booking?")) {
-        const success = cancelBooking(bookingId);
+        const success = await cancelBooking(bookingId);
         if (success) {
-            // Anim out card
             const card = document.getElementById(`card-${bookingId}`);
             if (card) {
                 card.style.opacity = "0";
                 card.style.transform = "scale(0.8)";
-                setTimeout(() => {
-                    renderBookingsDashboard();
+                setTimeout(async () => {
+                    await renderBookingsDashboard();
                 }, 300);
             }
         }
@@ -833,8 +961,8 @@ function renderDevContent() {
             </div>
             <pre class="dev-code-block"><code>// RegEx Validation Patterns used here:
 
-// 1. Emails: Must be university domains (@egerton.ac.ke)
-emailPattern = /^[a-zA-Z0-9._%+-]+@(student\\.)?egerton\\.ac\\.ke$/;
+// 1. Emails: Must be Gmail addresses (@gmail.com)
+emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\\.com$/;
 
 // 2. Passwords: Min 6 characters, 1 uppercase, 1 digit
 passwordPattern = /^(?=.*[0-9])(?=.*[a-zA-Z]).{6,20}$/;
@@ -934,11 +1062,20 @@ function updateDevConsoleDB() {
 // 7. Initialize Everything and Hook UI Elements on Load
 // ==========================================================================
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     initNavbarState();
-    renderBookingsDashboard();
-    renderBookingSuccessSection();
-    buildDevConsole();
+    await renderBookingsDashboard();
+    await renderBookingSuccessSection();
+    const isLocalhost = ['localhost', '127.0.0.1', '::1', ''].includes(window.location.hostname);
+    if (isLocalhost) {
+      buildDevConsole();
+    }
+
+    const authFields = document.querySelectorAll('#login-username, #login-password, #signup-username, #signup-email, #signup-password, #signup-idnum, #forgot-email');
+    authFields.forEach((field) => {
+      if (!field) return;
+      field.setAttribute('autocomplete', field.type === 'password' ? 'new-password' : 'off');
+    });
     
     // ---------------------------------------------------------
     // A. Modal Popup Event Handlers (Anti-Hash-Scroll UX)
@@ -1044,7 +1181,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         if (emailInput) {
             emailInput.addEventListener("input", () => {
-                validateField(emailInput, ValidationRules.email, "Must be a valid Egerton university email (@egerton.ac.ke or @student.egerton.ac.ke).");
+                validateField(emailInput, ValidationRules.email, "Must be a valid Gmail address (@gmail.com).");
             });
         }
         if (idInput) {
@@ -1058,17 +1195,17 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
         
-        signupForm.addEventListener("submit", (e) => {
+        signupForm.addEventListener("submit", async (e) => {
             e.preventDefault();
             
             const isUserValid = validateField(usernameInput, ValidationRules.username, "Username must be 5-20 characters, alphanumeric.");
-            const isEmailValid = validateField(emailInput, ValidationRules.email, "Must be a valid Egerton university email (@egerton.ac.ke or @student.egerton.ac.ke).");
+            const isEmailValid = validateField(emailInput, ValidationRules.email, "Must be a valid Gmail address (@gmail.com).");
             const isIdValid = validateField(idInput, ValidationRules.staffOrStudentId, "Enter a valid ID number (minimum 4 characters).");
             const isPassValid = validateField(passwordInput, ValidationRules.password, "Must be 6-20 characters with at least one letter and one number.");
             
             if (isUserValid && isEmailValid && isIdValid && isPassValid) {
                 const userTypeVal = document.getElementById("signup-usertype").value;
-                const result = handleSignup(
+                const result = await handleSignup(
                     usernameInput.value.trim(),
                     emailInput.value.trim(),
                     passwordInput.value,
@@ -1097,7 +1234,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const emailOrUserVal = document.getElementById("login-username");
         const passwordVal = document.getElementById("login-password");
         
-        loginForm.addEventListener("submit", (e) => {
+        loginForm.addEventListener("submit", async (e) => {
             e.preventDefault();
             
             const isUserValid = emailOrUserVal.value.trim() !== "";
@@ -1111,7 +1248,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             
             if (isUserValid && isPassValid) {
-                const result = handleLogin(emailOrUserVal.value.trim(), passwordVal.value);
+                const result = await handleLogin(emailOrUserVal.value.trim(), passwordVal.value);
                 
                 if (result.success) {
                     alert("🚪 Welcome back! You are now logged in.");
@@ -1134,13 +1271,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const emailInput = document.getElementById("forgot-email");
         if (emailInput) {
             emailInput.addEventListener("input", () => {
-                validateField(emailInput, ValidationRules.email, "Must be a valid Egerton university email.");
+                validateField(emailInput, ValidationRules.email, "Must be a valid Gmail address (@gmail.com).");
             });
         }
         
         forgotForm.addEventListener("submit", (e) => {
             e.preventDefault();
-            const isValid = validateField(emailInput, ValidationRules.email, "Must be a valid Egerton university email.");
+            const isValid = validateField(emailInput, ValidationRules.email, "Must be a valid Gmail address (@gmail.com).");
             if (isValid) {
                 alert(`📧 Simulated Password Reset Link Sent!\nWe have dispatched a recovery email to: ${emailInput.value.trim()}`);
                 closeAllModals();
@@ -1171,6 +1308,8 @@ window.EgertonAuth = {
     getActiveUser,
     getUsers,
     getBookings,
+    getSentEmails,
+    createBookingConfirmationEmail,
     updateDevConsoleDB,
     renderBookingsDashboard,
     renderBookingSuccessSection,

@@ -85,6 +85,11 @@
   color: var(--text-dark) !important;
 }
 
+[data-theme="dark"] .home-page,
+[data-theme="dark"] .admin-page {
+  background: var(--page-bg) !important;
+}
+
 [data-theme="dark"] header,
 [data-theme="dark"] header.navbar {
   background: var(--navbar-bg) !important;
@@ -144,10 +149,50 @@
 [data-theme="dark"] .booking-ticket-card,
 [data-theme="dark"] .feature-card-pro,
 [data-theme="dark"] .fleet-card-pro,
-[data-theme="dark"] .stat-card {
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .feature-card,
+[data-theme="dark"] .home-section,
+[data-theme="dark"] .home-section-header,
+[data-theme="dark"] .home-hero-pro,
+[data-theme="dark"] .home-stats,
+[data-theme="dark"] .fleet-preview-grid,
+[data-theme="dark"] .footer,
+[data-theme="dark"] .booking-success-wrap,
+[data-theme="dark"] .admin-card,
+[data-theme="dark"] .admin-panel,
+[data-theme="dark"] .admin-stats,
+[data-theme="dark"] .admin-tab,
+[data-theme="dark"] .admin-denied,
+[data-theme="dark"] .admin-hero,
+[data-theme="dark"] .fleet-admin-card,
+[data-theme="dark"] .issue-form {
   background: var(--surface-bg) !important;
   border-color: var(--border-color) !important;
   color: var(--text-dark);
+  box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] .feature-card {
+  background: var(--surface-bg) !important;
+}
+
+[data-theme="dark"] .home-section-header h2,
+[data-theme="dark"] .home-hero-pro h1,
+[data-theme="dark"] .home-hero-pro .hero-badge,
+[data-theme="dark"] .home-hero-pro .hero-lead,
+[data-theme="dark"] .admin-hero h1,
+[data-theme="dark"] .admin-hero p,
+[data-theme="dark"] .admin-stat .lbl,
+[data-theme="dark"] .admin-card-header h3,
+[data-theme="dark"] .admin-meta,
+[data-theme="dark"] .footer p {
+  color: var(--text-dark) !important;
+}
+
+[data-theme="dark"] .hero-btn-primary,
+[data-theme="dark"] .hero-btn-secondary,
+[data-theme="dark"] .login-btn,
+[data-theme="dark"] .admin-tab.active {
   box-shadow: var(--shadow-sm);
 }
 
@@ -160,6 +205,14 @@
 
 [data-theme="dark"] .product-grid {
   background: transparent;
+}
+
+[data-theme="dark"] .popup {
+  display: none !important;
+}
+
+[data-theme="dark"] .popup.active {
+  display: flex !important;
 }
 
 [data-theme="dark"] .popup-box {
@@ -192,6 +245,41 @@
 [data-theme="dark"] .dropdown-menu {
   background: var(--surface-bg);
   border-color: var(--border-color);
+}
+
+[data-theme="dark"] .section,
+[data-theme="dark"] .section-title,
+[data-theme="dark"] .page-section,
+[data-theme="dark"] .page-card,
+[data-theme="dark"] .contact-card,
+[data-theme="dark"] .service-card,
+[data-theme="dark"] .info-card,
+[data-theme="dark"] .profile-section,
+[data-theme="dark"] .booking-card,
+[data-theme="dark"] .vehicle-card,
+[data-theme="dark"] .modal-content,
+[data-theme="dark"] .popup,
+[data-theme="dark"] .panel,
+[data-theme="dark"] .panel-body,
+[data-theme="dark"] .table,
+[data-theme="dark"] .table th,
+[data-theme="dark"] .table td,
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea,
+[data-theme="dark"] button,
+[data-theme="dark"] .btn,
+[data-theme="dark"] .login-btn,
+[data-theme="dark"] .admin-btn {
+  background: var(--surface-elevated) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-dark) !important;
+}
+
+[data-theme="dark"] .table,
+[data-theme="dark"] .table th,
+[data-theme="dark"] .table td {
+  border-color: var(--border-color) !important;
 }
 
 [data-theme="dark"] .dropdown-item {

@@ -6,9 +6,9 @@
   <title>Admin Panel — Egerton University Transport</title>
   <script src="JS/theme.js"></script>
   <link rel="stylesheet" href="nojacss.css">
-  <link rel="stylesheet" href="theme.css">
   <link rel="stylesheet" href="responsive.css">
   <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="theme.css">
 </head>
 <body class="admin-page">
 
@@ -33,7 +33,7 @@
         <form id="login-form-inner" style="display:flex;flex-direction:column;gap:10px;">
           <div class="input-group">
             <label for="login-username">Username or Email</label>
-            <input type="text" id="login-username" placeholder="transport.admin@egerton.ac.ke" required>
+            <input type="text" id="login-username" placeholder="transport.admin@gmail.com" required>
             <span class="input-feedback-msg"></span>
           </div>
           <div class="input-group">
@@ -73,6 +73,20 @@
         <div class="admin-stat"><span class="val" id="stat-approved">0</span><span class="lbl">Authorized trips</span></div>
         <div class="admin-stat"><span class="val" id="stat-issues">0</span><span class="lbl">Open issues</span></div>
         <div class="admin-stat"><span class="val" id="stat-maintenance">0</span><span class="lbl">Buses in maintenance</span></div>
+      </div>
+
+      <div class="admin-actions-grid">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h3>Quick Actions</h3>
+          </div>
+          <p class="admin-meta">Refresh dashboard data or jump straight to the next admin task.</p>
+          <div class="admin-actions">
+            <button class="admin-btn admin-btn-approve" onclick="location.reload();">Refresh Data</button>
+            <button class="admin-btn admin-btn-neutral" onclick="alert('Approve requests from the list below.');">Approve Requests</button>
+            <button class="admin-btn admin-btn-neutral" onclick="alert('Use the issue panel to log maintenance items.');">Log Issue</button>
+          </div>
+        </div>
       </div>
 
       <div class="admin-tabs">
